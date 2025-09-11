@@ -1,65 +1,82 @@
 
 # SyncStream Pro
 
-Synchronized watch‑together app with real‑time chat, Electron desktop UI, and a built‑in HTTP streaming server for local files. Designed for self‑hosting with router port‑forwarding (no third‑party tunnels).
+Watch together. Stream local files. Chat in real‑time. Self‑host with confidence.
 
-## Features
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Electron](https://img.shields.io/badge/Electron-Desktop-47848F?logo=electron&logoColor=white)](https://www.electronjs.org)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socket.io&logoColor=white)](https://socket.io)
+[![License](https://img.shields.io/badge/License-Project%20License-blue)](#license)
 
-- Synchronized playback with Socket.IO
-- Real‑time chat with typing indicators and join/leave system messages
-- Local file streaming over HTTP with range requests
-- Load by file path (Electron) or direct/remote URL
-- Media manager: clear current media, history, quick reload
-- Internet Speed Test (download/upload/ping/jitter) with recommendations
-- Secure-by-default Electron setup: contextIsolation, no nodeIntegration, strict CSP
+SyncStream Pro is a watch‑together application with a modern Electron UI and a built‑in HTTP streaming server. Hosts can stream local video files to viewers over LAN or the internet (via router port‑forwarding). Includes real‑time chat, typing indicators, media management, and a speed‑test utility.
+
+## Highlights
+
+- Synchronized playback powered by Socket.IO
+- Stream local files using efficient HTTP range requests
+- Media Manager: clear current media, history, quick reload
+- Chat enhancements: typing indicators, join/leave system messages
+- Built‑in speed test (download/upload/ping/jitter) with recommendations
+- Security‑hardened Electron: contextIsolation, no nodeIntegration, strict CSP
 - Optional HTTPS (self‑signed) for remote access
 
-## Requirements
+## Getting Started
 
+### Requirements
 - Node.js 18+
-- Windows 10/11 for the provided scripts (Linux/macOS supported via npm)
+- Windows 10/11 (scripts provided). Linux/macOS supported via npm.
 
-## Install
-
+### Install
 ```bash
 npm install
 ```
 
-## Run (Electron desktop)
-
+### Run (Electron desktop)
 ```bash
 npm start
 ```
 
-If you prefer server only (for browser access on LAN):
-
+### Run server only (for browser clients on LAN)
 ```bash
 node app.js
 ```
 
-## Access
-
+### Access
 - Local: `http://localhost:5000`
 - LAN: `http://<your-local-ip>:5000`
 - Internet: `http://<your-public-ip>:5000` (requires port forwarding)
 
-## Port Forwarding (internet access)
+## Port Forwarding (Internet Access)
 
 1. Forward TCP port 5000 on your router to your PC’s local IP.
-2. Share your public URL with friends: `http://<public-ip>:5000/?join=<ROOMID>` or protocol link `syncstream://<public-ip>/join/<ROOMID>` (Electron app users).
-3. Consider Dynamic DNS if your IP changes frequently.
+2. Share the public URL: `http://<public-ip>:5000/?join=<ROOMID>`
+3. Electron users can also use protocol links: `syncstream://<public-ip>/join/<ROOMID>`
+4. Consider Dynamic DNS if your IP changes frequently.
 
-Pros: full control, no third‑party dependency.  
-Cons: exposes a port, depends on your ISP/router, requires firewall allow‑rule.
+Pros: full control, zero third‑party dependency.
+
+Cons: you expose a port; depends on ISP/router; ensure firewall allows inbound 5000/TCP.
 
 ## Security
 
 - Electron hardened: `contextIsolation: true`, `nodeIntegration: false`, `webSecurity: true`, preload bridge only
 - Strict Content‑Security‑Policy in `src/renderer/index.html`
-- Express security headers, CORS and basic rate limiting via `SecurityManager`
-- JWT support for sockets (hook present), SHA‑256 hashing utilities, AES‑256‑GCM helpers
+- Security middleware via `SecurityManager` (Helmet, CORS, basic rate limiting)
+- JWT hooks for sockets, SHA‑256 hashing helpers, AES‑256‑GCM utilities
 
-## Project Structure
+## Architecture
+
+```
+Electron (main)
+ └─ preload (secure IPC)
+    └─ Renderer (UI + modules)
+HTTP/Express API  ←→  Socket.IO (realtime)
+ └─ StreamingServer (range requests for local files)
+ └─ RoomManager / SocketHandler (room, sync, chat)
+ └─ SecurityManager (HTTPS, headers, CORS, rate‑limit)
+```
+
+## Project Layout
 
 ```
 sync-watch/
@@ -94,26 +111,17 @@ sync-watch/
 ## Usage
 
 1. Start the app (`npm start`).
-2. Create a room (your machine becomes the host server).
+2. Create a room — your PC becomes the host server.
 3. Load media:
-   - Electron: choose a local video file (it streams via `/stream/<roomId>/video`).
+   - Electron: choose a local video file (streams at `/stream/<roomId>/video`).
    - URL: paste a direct media URL.
-4. Share the room ID or the generated URL.
+4. Share the room ID or generated URL with viewers.
 
-Admin can pause/play/seek for everyone, clear media, and manage history.
+Admin controls: play/pause/seek for everyone, clear media, manage history.
 
-## Git
+## Contributing
 
-Initialize and push to your repo:
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/<username>/<repo>.git
-git branch -M master
-git push -u origin master
-```
+Issues and pull requests are welcome. Please follow conventional, descriptive commit messages and open focused PRs.
 
 ## License
 

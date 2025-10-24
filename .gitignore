@@ -12,6 +12,7 @@ yarn-error.log*
 .env
 .env.*
 *.local
+.secret
 
 # Logs
 logs/

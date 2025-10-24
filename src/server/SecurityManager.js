@@ -31,7 +31,7 @@ class SecurityManager {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.socket.io"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           imgSrc: ["'self'", "data:", "https:", "blob:"],
           connectSrc: ["'self'", "ws:", "wss:", "http:", "https:"],

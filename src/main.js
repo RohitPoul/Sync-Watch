@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, protocol, session } = require("electron");
 const path = require("path");
 const { startServer } = require("../app.js");
 
@@ -29,7 +29,6 @@ function createWindow() {
       allowRunningInsecureContent: false,
       experimentalFeatures: false,
       enableRemoteModule: false,
-      // CSP will be set via meta tag in HTML
     },
     frame: true,
     titleBarStyle: "default",
@@ -43,6 +42,16 @@ function createWindow() {
     maximizable: true,
     resizable: true,
     closable: true,
+  });
+
+  // Set Content Security Policy headers
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ["default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: http: blob:; media-src 'self' blob: https: http: file:; connect-src 'self' ws: wss: http: https: file:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self';"]
+      }
+    });
   });
 
   // Load the renderer

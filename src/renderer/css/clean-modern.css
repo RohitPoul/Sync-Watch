@@ -1,0 +1,752 @@
+/* ============================================
+   CLEAN MODERN UI - SyncStream Pro v2.0
+   FORCE OVERRIDE ALL OLD STYLES
+   ============================================ */
+
+/* Complete Reset - Override Everything */
+* {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Remove all old styles */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  color: #f8fafc !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Custom Scrollbar - Dark Theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.3) rgba(15, 23, 42, 0.5);
+}
+
+#app {
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+/* Page System */
+.page {
+  display: none !important;
+  min-height: 100vh;
+  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.page.active {
+  display: flex !important;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ============================================
+   Welcome Page
+   ============================================ */
+
+#welcome-page .welcome-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 2rem 4rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+.welcome-header {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.logo-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.app-tagline {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin: 0;
+  font-weight: 400;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.icon-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.main-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.action-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.action-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.action-card:hover::before {
+  opacity: 1;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.action-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.action-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #f8fafc;
+  position: relative;
+  z-index: 1;
+}
+
+.action-card p {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.action-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.action-features span {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.quick-join {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.quick-join-header {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.quick-join-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.code-input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'SF Mono', monospace;
+  transition: all 0.2s ease;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.join-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.join-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.info-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.info-link {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #f8fafc;
+}
+
+/* ============================================
+   Create Room Page
+   ============================================ */
+
+#create-page .create-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.create-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+}
+
+.create-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.create-form-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-icon {
+  font-size: 1.25rem;
+}
+
+.section-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.input-group input {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.create-btn {
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.form-actions {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Join Room Page
+   ============================================ */
+
+#join-page .join-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.join-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.join-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.join-form-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ============================================
+   Success Page
+   ============================================ */
+
+#success-page .success-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.success-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.success-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.success-header p {
+  font-size: 1.125rem;
+  color: #cbd5e1;
+}
+
+/* ============================================
+   Responsive Design - Smart Adaptive
+   ============================================ */
+
+/* Large screens - use more horizontal space */
+@media (min-width: 1400px) {
+  #welcome-page .welcome-container {
+    padding: 2rem 6rem;
+  }
+  
+  .main-actions {
+    max-width: 1200px;
+    gap: 4rem;
+  }
+  
+  #create-page .create-container,
+  #join-page .join-container {
+    max-width: 1000px;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 1024px) {
+  #welcome-page .welcome-container {
+    padding: 2rem 3rem;
+  }
+  
+  .main-actions {
+    max-width: 800px;
+    gap: 2rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  #welcome-page .welcome-container {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .app-title {
+    font-size: 2rem;
+  }
+
+  .main-actions {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .action-card {
+    padding: 1.5rem;
+  }
+
+  .quick-join-form {
+    flex-direction: column;
+  }
+
+  .info-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #create-page .create-container,
+  #join-page .join-container {
+    padding: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  #welcome-page .welcome-container {
+    padding: 1rem;
+  }
+
+  .welcome-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    position: static;
+  }
+
+  .app-title {
+    font-size: 1.75rem;
+  }
+
+  .action-card {
+    padding: 1.25rem;
+  }
+  
+  #create-page .create-container,
+  #join-page .join-container {
+    padding: 1rem;
+  }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+/
+* ============================================
+   Force Hide Non-Active Pages
+   ============================================ */
+
+/* Hide all pages by default */
+#welcome-page,
+#create-page,
+#join-page,
+#success-page,
+#room-page {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Show only active page */
+#welcome-page.active,
+#create-page.active,
+#join-page.active,
+#success-page.active,
+#room-page.active {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Ensure app container doesn't show multiple pages */
+#app {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hide room page elements when on welcome page */
+.page:not(.active) * {
+  display: none !important;
+}

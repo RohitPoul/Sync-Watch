@@ -6,7 +6,19 @@ import { VideoManager } from './modules/VideoManager.js';
 import { ChatManager } from './modules/ChatManager.js';
 import { NetworkMonitor } from './modules/NetworkMonitor.js';
 import { Utils } from './modules/Utils.js';
-import speedTest from './modules/SpeedTest.js';
+
+import modalManager from './modules/ModalManager.js';
+import ModalTemplates from './modules/ModalTemplates.js';
+
+import { Sidebar } from './modules/Sidebar.js';
+import { VideoControls } from './modules/VideoControls.js';
+import notificationManager from './modules/NotificationManager.js';
+import NetworkStatusModal from './modules/NetworkStatusModal.js';
+import { ResponsiveManager } from './modules/ResponsiveManager.js'; // Task 9.1: Responsive behavior
+import keyboardNavigationManager from './modules/KeyboardNavigationManager.js'; // Task 10.1: Keyboard navigation
+import accessibilityManager from './modules/AccessibilityManager.js'; // Task 10.2: ARIA labels
+import colorContrastChecker from './modules/ColorContrastChecker.js'; // Task 10.3: Color contrast
+import modernUIManager from './modules/ModernUIManager.js'; // Modern UI interactions
 
 class SyncStreamApp {
   constructor() {
@@ -16,7 +28,19 @@ class SyncStreamApp {
     this.video = null;
     this.chat = null;
     this.network = null;
+    this.sidebar = null;
+    this.videoControls = null;
+    this.responsive = null;
+    this.keyboard = keyboardNavigationManager;
+    this.accessibility = accessibilityManager;
+    this.colorContrast = colorContrastChecker;
     this.utils = new Utils();
+    this.modal = modalManager;
+    this.modalTemplates = ModalTemplates;
+
+    this.notifications = notificationManager;
+    this.networkStatusModal = null;
+    this.modernUI = modernUIManager;
   }
 
   async init() {
@@ -24,6 +48,26 @@ class SyncStreamApp {
     
     // Setup UI event listeners
     this.ui.init();
+    
+    // Initialize modern UI manager
+    this.modernUI.init();
+    
+
+    
+    // Initialize Responsive Manager (Task 9.1)
+    this.responsive = new ResponsiveManager();
+    
+    // Initialize Keyboard Navigation (Task 10.1)
+    // Skip link removed - was causing UI issues
+    
+    // Make keyboard navigation globally accessible
+    window.keyboardNavigationManager = this.keyboard;
+    
+    // Make accessibility manager globally accessible (Task 10.2)
+    window.accessibilityManager = this.accessibility;
+    
+    // Make color contrast checker globally accessible (Task 10.3)
+    window.colorContrastChecker = this.colorContrast;
     
     // Check for Electron environment
     this.checkEnvironment();
@@ -82,6 +126,8 @@ class SyncStreamApp {
       this.handleJoinRoom(e.target);
     });
     
+
+    
     // Button clicks
     document.addEventListener('click', (e) => {
       const button = e.target.closest('[data-action]');
@@ -111,11 +157,35 @@ class SyncStreamApp {
       }
     });
 
-    // Speed Test
-    this.setupSpeedTest();
+
     
     // Media Manager
     this.setupMediaManager();
+    
+    // Welcome Page Modals
+    this.setupWelcomeModals();
+    
+    // Success Page Advanced Toggle
+    this.setupSuccessPageToggle();
+  }
+  
+  setupSuccessPageToggle() {
+    const toggleBtn = document.getElementById('toggle-advanced');
+    const advancedContent = document.getElementById('advanced-content');
+    
+    if (toggleBtn && advancedContent) {
+      toggleBtn.addEventListener('click', () => {
+        const isVisible = advancedContent.style.display !== 'none';
+        
+        if (isVisible) {
+          advancedContent.style.display = 'none';
+          toggleBtn.classList.remove('active');
+        } else {
+          advancedContent.style.display = 'block';
+          toggleBtn.classList.add('active');
+        }
+      });
+    }
   }
 
   setupMediaManager() {
@@ -141,6 +211,92 @@ class SyncStreamApp {
     
     // Load initial history
     this.loadMediaHistory();
+  }
+
+  setupWelcomeModals() {
+    // Features Modal
+    const featuresBtn = document.getElementById('features-btn');
+    const featuresModal = document.getElementById('features-modal');
+    
+    if (featuresBtn && featuresModal) {
+      featuresBtn.addEventListener('click', () => {
+        this.openModal(featuresModal);
+      });
+    }
+    
+    // How It Works Modal (will be implemented in next task)
+    const howItWorksBtn = document.getElementById('how-it-works-btn');
+    const howItWorksModal = document.getElementById('how-it-works-modal');
+    
+    if (howItWorksBtn && howItWorksModal) {
+      howItWorksBtn.addEventListener('click', () => {
+        this.openModal(howItWorksModal);
+      });
+    }
+    
+    // Settings Modal (will be implemented in next task)
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    
+    if (settingsBtn && settingsModal) {
+      settingsBtn.addEventListener('click', () => {
+        this.openModal(settingsModal);
+      });
+    }
+    
+    // Setup close handlers for all modals
+    this.setupModalCloseHandlers();
+  }
+
+  openModal(modal) {
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    
+    // Focus trap
+    const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusable) {
+      setTimeout(() => firstFocusable.focus(), 100);
+    }
+  }
+
+  closeModal(modal) {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+    }, 300);
+  }
+
+  setupModalCloseHandlers() {
+    // Handle close button clicks
+    document.querySelectorAll('.modal-close, .modal-close-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modal = e.target.closest('.modal-overlay');
+        if (modal) {
+          this.closeModal(modal);
+        }
+      });
+    });
+    
+    // Handle backdrop clicks
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          this.closeModal(overlay);
+        }
+      });
+    });
+    
+    // Handle ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (activeModal) {
+          this.closeModal(activeModal);
+        }
+      }
+    });
   }
 
   clearVideo() {
@@ -300,142 +456,7 @@ class SyncStreamApp {
     return 'Video';
   }
 
-  setupSpeedTest() {
-    const speedTestBtn = document.getElementById('speed-test-btn');
-    const modal = document.getElementById('speed-test-modal');
-    const closeBtn = document.getElementById('close-speed-test');
-    const startBtn = document.getElementById('start-speed-test');
-    const shareBtn = document.getElementById('share-results');
 
-    if (!speedTestBtn || !modal) return;
-
-    // Open modal
-    speedTestBtn.addEventListener('click', () => {
-      modal.style.display = 'block';
-      setTimeout(() => modal.classList.add('active'), 10);
-    });
-
-    // Close modal
-    const closeModal = () => {
-      modal.classList.remove('active');
-      setTimeout(() => modal.style.display = 'none', 300);
-    };
-
-    closeBtn?.addEventListener('click', closeModal);
-    modal.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
-
-    // Start speed test
-    startBtn?.addEventListener('click', async () => {
-      if (speedTest.isRunning) {
-        this.ui.showToast('Speed test is already running', 'warning');
-        return;
-      }
-
-      startBtn.disabled = true;
-      startBtn.innerHTML = '<span>⏳</span> Testing...';
-      
-      // Reset display
-      document.getElementById('download-speed').textContent = '--';
-      document.getElementById('upload-speed').textContent = '--';
-      document.getElementById('ping-value').textContent = '--';
-      document.getElementById('jitter-value').textContent = '--';
-      document.getElementById('speed-rating').style.display = 'none';
-      document.getElementById('speed-comparison').style.display = 'none';
-      shareBtn.style.display = 'none';
-
-      try {
-        const results = await speedTest.runSpeedTest((message, progress) => {
-          document.getElementById('status-message').textContent = message;
-          document.getElementById('test-progress').style.width = `${progress}%`;
-        });
-
-        // Display results
-        document.getElementById('download-speed').textContent = results.download.toFixed(1);
-        document.getElementById('upload-speed').textContent = results.upload.toFixed(1);
-        document.getElementById('ping-value').textContent = results.ping;
-        document.getElementById('jitter-value').textContent = results.jitter;
-
-        // Show rating
-        const rating = speedTest.getSpeedRating(results.download);
-        const ratingEl = document.getElementById('speed-rating');
-        const badgeEl = ratingEl.querySelector('.rating-badge');
-        
-        document.getElementById('rating-icon').textContent = rating.icon;
-        document.getElementById('rating-text').textContent = rating.rating;
-        badgeEl.style.borderColor = rating.color;
-        badgeEl.style.color = rating.color;
-        ratingEl.style.display = 'block';
-
-        // Show streaming recommendation
-        const recommendation = speedTest.getStreamingRecommendation(results.download);
-        document.getElementById('rec-quality').textContent = recommendation.quality;
-        document.getElementById('rec-description').textContent = recommendation.description;
-
-        // Show comparison with current usage if monitoring is active
-        if (this.network && this.network.currentStats) {
-          const currentUsage = (this.network.currentStats.downloadSpeed || 0) / 1000000; // Convert to Mbps
-          const available = results.download - currentUsage;
-          const utilization = (currentUsage / results.download) * 100;
-
-          document.getElementById('current-usage').textContent = `${currentUsage.toFixed(1)} Mbps`;
-          document.getElementById('available-bandwidth').textContent = `${available.toFixed(1)} Mbps`;
-          document.getElementById('network-utilization').textContent = `${utilization.toFixed(1)}%`;
-          document.getElementById('speed-comparison').style.display = 'block';
-        }
-
-        // Save to history
-        this.saveSpeedTestResult(results);
-        
-        // Show share button
-        shareBtn.style.display = 'inline-flex';
-        
-        this.ui.showToast('Speed test completed!', 'success');
-      } catch (error) {
-        console.error('Speed test error:', error);
-        this.ui.showToast('Speed test failed: ' + error.message, 'error');
-      } finally {
-        startBtn.disabled = false;
-        startBtn.innerHTML = '<span>🚀</span> Start Test';
-        document.getElementById('test-progress').style.width = '0%';
-      }
-    });
-
-    // Share results
-    shareBtn?.addEventListener('click', () => {
-      if (!speedTest.results) return;
-      
-      const text = `My Internet Speed Test Results:
-⬇️ Download: ${speedTest.formatSpeed(speedTest.results.download)}
-⬆️ Upload: ${speedTest.formatSpeed(speedTest.results.upload)}
-📍 Ping: ${speedTest.results.ping}ms
-📊 Jitter: ${speedTest.results.jitter}ms
-
-Tested with SyncStream Pro 🎬`;
-      
-      if (navigator.share) {
-        navigator.share({
-          title: 'Speed Test Results',
-          text: text
-        });
-      } else {
-        navigator.clipboard.writeText(text);
-        this.ui.showToast('Results copied to clipboard!', 'success');
-      }
-    });
-  }
-
-  saveSpeedTestResult(results) {
-    const history = JSON.parse(localStorage.getItem('speedTestHistory') || '[]');
-    history.unshift({
-      ...results,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Keep only last 10 results
-    if (history.length > 10) history.pop();
-    
-    localStorage.setItem('speedTestHistory', JSON.stringify(history));
-  }
 
   async handleCreateRoom(form) {
     this.ui.showLoading('Creating room...');
@@ -526,6 +547,8 @@ Tested with SyncStream Pro 🎬`;
     }
   }
 
+
+
   async initializeSocket(serverUrl = null) {
     if (this.socket) {
       console.log('Socket already initialized');
@@ -549,7 +572,7 @@ Tested with SyncStream Pro 🎬`;
 
   handleAction(action) {
     const actions = {
-      'create-room': () => this.ui.showPage('create'),
+      'create-room': () => this.modernUI.showPage('create'),
       'join-room': () => this.ui.showPage('join'),
       'back-to-welcome': () => this.ui.showPage('welcome'),
       'enter-room': () => this.enterRoom(),
@@ -567,6 +590,7 @@ Tested with SyncStream Pro 🎬`;
       'room-id': 'room-id-display',
       'app-link': 'app-link',
       'web-link': 'web-link',
+      'public-url': 'public-url-display',
     };
     
     const elementId = elements[type];
@@ -584,11 +608,51 @@ Tested with SyncStream Pro 🎬`;
     this.ui.showNavbar();
     this.ui.updateRoomUI(this.state.roomData);
     
+    // Initialize sidebar if not already done
+    if (!this.sidebar) {
+      this.sidebar = new Sidebar();
+    }
+    
+    // Initialize video controls if not already done
+    if (!this.videoControls) {
+      this.videoControls = new VideoControls();
+    }
+    
     // Start network monitoring
     if (!this.network) {
       this.network = new NetworkMonitor(this.ui);
     }
     this.network.startMonitoring();
+    
+    // Initialize network status modal
+    if (!this.networkStatusModal) {
+      this.networkStatusModal = new NetworkStatusModal(this.network);
+    }
+    
+    // Setup network info button handler
+    this.setupNetworkInfoButton();
+  }
+
+  setupNetworkInfoButton() {
+    const networkInfoBtn = document.getElementById('network-info-btn');
+    
+    if (networkInfoBtn) {
+      networkInfoBtn.addEventListener('click', () => {
+        if (this.networkStatusModal) {
+          this.networkStatusModal.open();
+        }
+      });
+    }
+    
+    // Also handle connection status click
+    const connectionStatus = document.getElementById('connection-status-top');
+    if (connectionStatus) {
+      connectionStatus.addEventListener('click', () => {
+        if (this.networkStatusModal) {
+          this.networkStatusModal.open();
+        }
+      });
+    }
   }
 
   leaveRoom() {

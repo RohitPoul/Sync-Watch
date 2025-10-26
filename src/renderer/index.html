@@ -1,1447 +1,1218 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: http: blob:; media-src 'self' blob: https: http: file:; connect-src 'self' ws: wss: http: https: file:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: http: blob:; media-src 'self' blob: https: http: file:; connect-src 'self' ws: wss: http: https: file:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self';">
   <title>SyncStream Pro</title>
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main-new.css?v=2.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 </head>
-  <body>
-    <div id="app">
-      <!-- Navigation Bar -->
-      <nav class="navbar hidden" id="navbar">
-        <div class="nav-brand">
-          <div class="nav-logo">
-            <span class="logo-icon">🎬</span>
-            <span>SyncStream Pro</span>
-          </div>
+
+<body>
+  <div id="app">
+    <!-- Navigation Bar -->
+    <nav class="navbar hidden" id="navbar">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <span class="logo-icon">🎬</span>
+          <span>SyncStream Pro</span>
         </div>
-        
-        <div class="nav-center">
-          <div class="room-indicator">
-            <span class="status-dot"></span>
-            <span id="room-status-text">Connected</span>
-            <span class="room-id" id="nav-room-id"></span>
+      </div>
+
+      <div class="nav-center">
+        <div class="room-indicator">
+          <span class="status-dot"></span>
+          <span id="room-status-text">Connected</span>
+          <span class="room-id" id="nav-room-id"></span>
+        </div>
+        <div class="network-status" id="network-status">
+          <span>📡 Checking...</span>
+        </div>
+        <button class="nav-btn speed-test-btn" id="speed-test-btn" title="Test Internet Speed">
+          <span>⚡</span> Speed Test
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="nav-btn danger" data-action="leave-room" title="Leave Room">
+          <span>🚪</span> Leave
+        </button>
+      </div>
+    </nav>
+
+    <!-- Welcome Page -->
+    <div class="page active" id="welcome-page">
+      <div class="welcome-container">
+        <!-- Header -->
+        <header class="welcome-header">
+          <div class="logo-section">
+            <div class="logo-icon">🎬</div>
+            <h1 class="app-title">SyncStream Pro</h1>
+            <p class="app-tagline">Watch together, perfectly synced</p>
           </div>
-                      <div class="network-status" id="network-status">
-              <span>📡 Checking...</span>
-            </div>
-            <button class="nav-btn speed-test-btn" id="speed-test-btn" title="Test Internet Speed">
-              <span>⚡</span> Speed Test
+          <div class="header-actions">
+            <button class="icon-btn" id="settings-btn" title="Settings">
+              <span>⚙️</span>
             </button>
+            <button class="icon-btn" id="help-btn" title="Help">
+              <span>❓</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Main Actions -->
+        <div class="main-actions">
+          <div class="action-card primary" data-action="create-room">
+            <div class="action-icon">🏠</div>
+            <h2>Host a Room</h2>
+            <p>Create a new room and invite friends</p>
+            <div class="action-features">
+              <span>✓ Full control</span>
+              <span>✓ HD streaming</span>
+              <span>✓ Up to 25 users</span>
+            </div>
+          </div>
+
+          <div class="action-card secondary" data-action="join-room">
+            <div class="action-icon">🔗</div>
+            <h2>Join a Room</h2>
+            <p>Enter a room code to join friends</p>
+            <div class="action-features">
+              <span>✓ Instant sync</span>
+              <span>✓ Real-time chat</span>
+              <span>✓ Any device</span>
+            </div>
+          </div>
         </div>
-        
-        <div class="nav-actions">
-          <button class="nav-btn danger" data-action="leave-room" title="Leave Room">
-            <span>🚪</span> Leave
+
+        <!-- Quick Join -->
+        <div class="quick-join">
+          <div class="quick-join-header">
+            <span>Have a room code?</span>
+          </div>
+          <div class="quick-join-form">
+            <input type="text" id="quick-room-code" placeholder="Enter 8-character code" maxlength="8" class="code-input">
+            <button class="join-btn" aria-label="Quick join">Join Now</button>
+          </div>
+        </div>
+
+        <!-- Info Links -->
+        <div class="info-links">
+          <button class="info-link" id="features-btn">
+            <span>✨</span> Features
+          </button>
+          <button class="info-link" id="how-it-works-btn">
+            <span>❓</span> How It Works
+          </button>
+          <button class="info-link" id="guide-btn">
+            <span>📖</span> Setup Guide
           </button>
         </div>
-      </nav>
+      </div>
+    </div>
 
-      <!-- Welcome Page -->
-      <div class="page active" id="welcome-page">
-        <div class="welcome-wrapper">
-          <!-- Hero Section -->
-          <section class="hero-section">
-            <div class="hero-background">
-              <div class="hero-gradient"></div>
-              <div class="floating-elements">
-                <div class="float-element" style="--delay: 0s; --duration: 20s;">🎬</div>
-                <div class="float-element" style="--delay: 5s; --duration: 25s;">🎥</div>
-                <div class="float-element" style="--delay: 10s; --duration: 30s;">📺</div>
-                <div class="float-element" style="--delay: 15s; --duration: 22s;">🎞️</div>
-              </div>
-            </div>
-            
-            <div class="hero-content">
-              <div class="hero-badge">✨ Peer-to-Peer Streaming</div>
-              <h1 class="hero-title">
-                <span class="title-gradient">SyncStream Pro</span>
-              </h1>
-              <p class="hero-subtitle">
-                Transform any video into a <strong>shared experience</strong>.<br>
-                Watch together, react together, no matter the distance.
-              </p>
-              
-              <div class="hero-stats">
-                <div class="stat-item">
-                  <span class="stat-number">0ms</span>
-                  <span class="stat-label">Sync Delay</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-number">4K</span>
-                  <span class="stat-label">Max Quality</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-number">∞</span>
-                  <span class="stat-label">Users</span>
-                </div>
-              </div>
-              
-              <div class="hero-actions">
-                <button class="btn btn-hero-primary" data-action="create-room">
-                  <span class="btn-icon">🚀</span>
-                  <span>
-                    <strong>Host a Room</strong>
-                    <small>Become the server</small>
-                  </span>
-                </button>
-                <button class="btn btn-hero-secondary" data-action="join-room">
-                  <span class="btn-icon">🔗</span>
-                  <span>
-                    <strong>Join Room</strong>
-                    <small>Enter room code</small>
-                  </span>
-                </button>
-              </div>
+    <!-- Create Room Page -->
+    <div class="page" id="create-page">
+      <div class="create-container">
+        <!-- Header -->
+        <div class="create-header">
+          <button class="back-btn" data-action="back-to-welcome">
+            <span>←</span> Back
+          </button>
+          <h1>Create Your Room</h1>
+        </div>
 
-              <div class="quick-join-section">
-                <span class="quick-join-label">Have a room code?</span>
-                <div class="quick-join-input">
-                  <input type="text" placeholder="Enter 8-character code" maxlength="8" id="quick-room-code">
-                  <button class="quick-join-btn">→</button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Features Section -->
-          <section class="features-section">
-            <div class="section-container">
+        <!-- Create Form -->
+        <div class="create-form-card">
+          <form id="create-room-form">
+            <!-- Basic Info Section -->
+            <div class="form-section">
               <div class="section-header">
-                <h2 class="section-title">Why SyncStream Pro?</h2>
-                <p class="section-subtitle">Everything you need for the perfect watch party</p>
+                <span class="section-icon">👤</span>
+                <h2>Basic Information</h2>
               </div>
-              
-              <div class="features-grid">
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">🔄</span>
-                  </div>
-                  <h3>Perfect Synchronization</h3>
-                  <p>Every play, pause, and seek is instantly synced across all viewers. No more countdowns or "are you at 1:23?"</p>
-                  <div class="feature-badge">WebSocket Technology</div>
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="create-username">Your Name</label>
+                  <input type="text" id="create-username" name="username" 
+                         placeholder="Enter your display name" required maxlength="20">
                 </div>
-                
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">🏠</span>
-                  </div>
-                  <h3>You Own Your Server</h3>
-                  <p>When you create a room, your PC becomes the host. Complete control, no third-party servers, your rules.</p>
-                  <div class="feature-badge">P2P Architecture</div>
-                </div>
-                
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">💬</span>
-                  </div>
-                  <h3>Real-time Chat</h3>
-                  <p>React and discuss while watching. Chat messages sync with video timestamps for the full experience.</p>
-                  <div class="feature-badge">Built-in Messaging</div>
-                </div>
-                
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">🎨</span>
-                  </div>
-                  <h3>Quality Control</h3>
-                  <p>Support for 720p, 1080p, and 4K streaming. Adaptive quality based on everyone's connection speed.</p>
-                  <div class="feature-badge">HD/4K Support</div>
-                </div>
-                
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">🔒</span>
-                  </div>
-                  <h3>Privacy First</h3>
-                  <p>Password-protected rooms, admin controls, and no data collection. Your watch party, your privacy.</p>
-                  <div class="feature-badge">Secure Rooms</div>
-                </div>
-                
-                <div class="feature-card">
-                  <div class="feature-icon-wrapper">
-                    <span class="feature-icon">🌐</span>
-                  </div>
-                  <h3>Works Everywhere</h3>
-                  <p>Desktop app via Electron or any modern browser. Share links that work on any device.</p>
-                  <div class="feature-badge">Cross-Platform</div>
+                <div class="input-group">
+                  <label for="create-room-name">Room Name</label>
+                  <input type="text" id="create-room-name" name="roomName" 
+                         placeholder="Movie Night, Game Stream, etc." required maxlength="30">
                 </div>
               </div>
             </div>
-          </section>
 
-          <!-- How It Works Section -->
-          <section class="how-it-works-section">
-            <div class="section-container">
+            <!-- Room Settings Section -->
+            <div class="form-section">
               <div class="section-header">
-                <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">Get started in under a minute</p>
+                <span class="section-icon">⚙️</span>
+                <h2>Room Settings</h2>
               </div>
-              
-              <div class="steps-timeline">
-                <div class="timeline-line"></div>
-                
-                <div class="step-card">
-                  <div class="step-number">1</div>
-                  <div class="step-content">
-                    <h3>Create or Join</h3>
-                    <p>Host creates a room and becomes the server. Friends join with the room code.</p>
+              <div class="settings-row">
+                <div class="setting-group">
+                  <label>Room Size</label>
+                  <div class="radio-buttons">
+                    <label class="radio-btn">
+                      <input type="radio" name="maxUsers" value="5">
+                      <span>Small (5)</span>
+                    </label>
+                    <label class="radio-btn">
+                      <input type="radio" name="maxUsers" value="10" checked>
+                      <span>Medium (10)</span>
+                    </label>
+                    <label class="radio-btn">
+                      <input type="radio" name="maxUsers" value="25">
+                      <span>Large (25)</span>
+                    </label>
                   </div>
                 </div>
-                
-                <div class="step-card">
-                  <div class="step-number">2</div>
-                  <div class="step-content">
-                    <h3>Load Your Video</h3>
-                    <p>Add any video file or streaming URL. Everyone sees the same content.</p>
+                <div class="setting-group">
+                  <label>Privacy</label>
+                  <div class="radio-buttons">
+                    <label class="radio-btn">
+                      <input type="radio" name="privacy" value="public">
+                      <span>Public</span>
+                    </label>
+                    <label class="radio-btn">
+                      <input type="radio" name="privacy" value="private" checked>
+                      <span>Private</span>
+                    </label>
                   </div>
-                </div>
-                
-                <div class="step-card">
-                  <div class="step-number">3</div>
-                  <div class="step-content">
-                    <h3>Watch Together</h3>
-                    <p>Play, pause, seek - everything syncs automatically. Chat while you watch!</p>
-                  </div>
+                  <input type="password" id="create-password" name="password" 
+                         placeholder="Room password (optional)" maxlength="20" class="password-input">
                 </div>
               </div>
             </div>
-          </section>
 
-          <!-- CTA Section -->
-          <section class="cta-section">
-            <div class="cta-content">
-              <h2>Ready to Start Watching Together?</h2>
-              <p>No sign-up required. No downloads for joiners. Just create and share!</p>
-              <button class="btn btn-cta" data-action="create-room">
-                <span>Start Your Watch Party</span>
-                <span class="btn-arrow">→</span>
+            <!-- Quality Settings Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <span class="section-icon">🎬</span>
+                <h2>Streaming Quality</h2>
+              </div>
+              <div class="quality-grid">
+                <label class="quality-option">
+                  <input type="radio" name="videoQuality" value="720p30">
+                  <div class="quality-card">
+                    <div class="quality-title">Standard</div>
+                    <div class="quality-specs">720p • 30fps</div>
+                    <div class="quality-bandwidth">3.5 Mbps</div>
+                  </div>
+                </label>
+                <label class="quality-option">
+                  <input type="radio" name="videoQuality" value="1080p30">
+                  <div class="quality-card">
+                    <div class="quality-title">HD</div>
+                    <div class="quality-specs">1080p • 30fps</div>
+                    <div class="quality-bandwidth">5.0 Mbps</div>
+                  </div>
+                </label>
+                <label class="quality-option">
+                  <input type="radio" name="videoQuality" value="1080p60" checked>
+                  <div class="quality-card recommended">
+                    <div class="quality-badge">Recommended</div>
+                    <div class="quality-title">HD Smooth</div>
+                    <div class="quality-specs">1080p • 60fps</div>
+                    <div class="quality-bandwidth">8.0 Mbps</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+              <button type="submit" class="create-btn">
+                <span>🚀</span>
+                Create Room
               </button>
             </div>
-          </section>
-
-          <!-- About & GitHub Section -->
-          <section class="about-section">
-            <div class="section-container">
-              <div class="about-grid">
-                <!-- Project Info -->
-                <div class="about-card project-card">
-                  <div class="card-header">
-                    <span class="card-icon">💻</span>
-                    <h3>Open Source Project</h3>
-                  </div>
-                  <div class="card-content">
-                    <p>SyncStream Pro is a free, open-source project built with modern web technologies. Feel free to contribute, report issues, or fork the project!</p>
-                    <div class="tech-stack">
-                      <span class="tech-badge">Node.js</span>
-                      <span class="tech-badge">Socket.IO</span>
-                      <span class="tech-badge">Electron</span>
-                      <span class="tech-badge">Express</span>
-                      <span class="tech-badge">WebRTC</span>
-                    </div>
-                    <div class="project-stats">
-                      <div class="stat">
-                        <span class="stat-icon">⭐</span>
-                        <span>Star on GitHub</span>
-                      </div>
-                      <div class="stat">
-                        <span class="stat-icon">🔀</span>
-                        <span>Fork & Contribute</span>
-                      </div>
-                      <div class="stat">
-                        <span class="stat-icon">📝</span>
-                        <span>MIT License</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- GitHub Card -->
-                <div class="about-card github-card">
-                  <div class="card-header">
-                    <span class="card-icon">
-                      <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                      </svg>
-                    </span>
-                    <h3>GitHub Repository</h3>
-                  </div>
-                  <div class="card-content">
-                    <div class="repo-info">
-                      <h4>syncstream-pro</h4>
-                      <p>Watch videos together in perfect sync with P2P streaming</p>
-                    </div>
-                    <div class="github-buttons">
-                      <a href="https://github.com/yourusername/syncstream-pro" target="_blank" class="github-btn primary">
-                        <span>View on GitHub</span>
-                        <span>→</span>
-                      </a>
-                      <a href="https://github.com/yourusername/syncstream-pro/issues" target="_blank" class="github-btn">
-                        <span>Report Issue</span>
-                      </a>
-                      <a href="https://github.com/yourusername/syncstream-pro/wiki" target="_blank" class="github-btn">
-                        <span>Documentation</span>
-                      </a>
-                    </div>
-                    <div class="contribution-note">
-                      <span class="note-icon">💡</span>
-                      <span>Contributions are welcome! Check our contribution guidelines.</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Developer Card -->
-                <div class="about-card developer-card">
-                  <div class="card-header">
-                    <span class="card-icon">👨‍💻</span>
-                    <h3>About the Developer</h3>
-                  </div>
-                  <div class="card-content">
-                    <div class="developer-info">
-                      <div class="developer-avatar">
-                        <span>👤</span>
-                      </div>
-                      <div class="developer-details">
-                        <h4>Your Name</h4>
-                        <p class="developer-title">Full Stack Developer</p>
-                        <p class="developer-bio">Passionate about creating tools that bring people together. Building open-source projects that make a difference.</p>
-                      </div>
-                    </div>
-                    <div class="social-links">
-                      <a href="https://github.com/yourusername" target="_blank" class="social-link" title="GitHub">
-                        <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
-                          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                        </svg>
-                      </a>
-                      <a href="https://twitter.com/yourusername" target="_blank" class="social-link" title="Twitter">
-                        <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                        </svg>
-                      </a>
-                      <a href="https://linkedin.com/in/yourusername" target="_blank" class="social-link" title="LinkedIn">
-                        <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                      </a>
-                      <a href="mailto:your.email@example.com" class="social-link" title="Email">
-                        <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                        </svg>
-                      </a>
-                      <a href="https://yourwebsite.com" target="_blank" class="social-link" title="Website">
-                        <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                        </svg>
-                      </a>
-                    </div>
-                    <div class="contact-cta">
-                      <p>Got questions or suggestions?</p>
-                      <a href="mailto:your.email@example.com" class="contact-btn">
-                        <span>Get in Touch</span>
-                        <span>✉️</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Quick Links -->
-              <div class="quick-links-section">
-                <h3>Quick Links & Resources</h3>
-                <div class="links-grid">
-                  <a href="https://github.com/yourusername/syncstream-pro#readme" target="_blank" class="quick-link">
-                    <span class="link-icon">📖</span>
-                    <span>Documentation</span>
-                  </a>
-                  <a href="https://github.com/yourusername/syncstream-pro/releases" target="_blank" class="quick-link">
-                    <span class="link-icon">📦</span>
-                    <span>Releases</span>
-                  </a>
-                  <a href="https://github.com/yourusername/syncstream-pro/blob/main/LICENSE" target="_blank" class="quick-link">
-                    <span class="link-icon">⚖️</span>
-                    <span>License</span>
-                  </a>
-                  <a href="https://github.com/yourusername/syncstream-pro/blob/main/CONTRIBUTING.md" target="_blank" class="quick-link">
-                    <span class="link-icon">🤝</span>
-                    <span>Contributing</span>
-                  </a>
-                  <a href="https://github.com/yourusername/syncstream-pro/discussions" target="_blank" class="quick-link">
-                    <span class="link-icon">💬</span>
-                    <span>Discussions</span>
-                  </a>
-                  <a href="https://github.com/yourusername/syncstream-pro/wiki" target="_blank" class="quick-link">
-                    <span class="link-icon">📚</span>
-                    <span>Wiki</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Footer -->
-          <footer class="welcome-footer">
-            <div class="footer-content">
-              <div class="footer-brand">
-                <span class="footer-logo">🎬</span>
-                <span>SyncStream Pro</span>
-              </div>
-              <div class="footer-info">
-                <span>P2P Video Streaming</span>
-                <span>•</span>
-                <span>Port 5000</span>
-                <span>•</span>
-                <span>v2.0.0</span>
-              </div>
-            </div>
-          </footer>
+          </form>
         </div>
       </div>
+    </div>
 
-      <!-- Create Room Page -->
-      <div class="page" id="create-page">
-        <div class="page-container">
-          <div class="page-header">
-            <button class="back-btn" data-action="back-to-welcome">
-              <span>←</span> Back
-            </button>
-            <h1>Create Your Room</h1>
-          </div>
+    <!-- Join Room Page -->
+    <div class="page" id="join-page">
+      <div class="join-container">
+        <!-- Header -->
+        <div class="join-header">
+          <button class="back-btn" data-action="back-to-welcome"></button>
+            <span>←</span> Back
+          </button>
+          <h1>Join Room</h1>
+        </div>
 
-          <div class="create-room-container">
-            <!-- Progress Steps -->
-            <div class="setup-progress">
-              <div class="progress-step active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-label">Basic Info</div>
+        <!-- Join Form -->
+        <div class="join-form-card">
+          <form id="join-room-form">
+            <!-- User Info Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <span class="section-icon">👤</span>
+                <h2>Your Information</h2>
               </div>
-              <div class="progress-line"></div>
-              <div class="progress-step" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-label">Room Settings</div>
-              </div>
-              <div class="progress-line"></div>
-              <div class="progress-step" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-label">Quality</div>
+              <div class="input-group">
+                <label for="join-username">Your Name</label>
+                <input type="text" id="join-username" name="username" 
+                       placeholder="Enter your display name" required maxlength="20">
+                <div class="input-hint">This will be visible to all participants</div>
               </div>
             </div>
 
-            <!-- Setup Card -->
-            <div class="setup-card compact">
-              <form id="create-room-form">
-                <!-- Step 1: Basic Info -->
-                <div class="form-step active" data-step="1">
-                  <div class="step-header">
-                    <div class="step-icon">👤</div>
-                    <div class="step-info">
-                      <h3>Let's start with the basics</h3>
-                      <p>Tell us your name and create a room</p>
-                    </div>
-                  </div>
-                  <div class="step-content">
-                    <div class="input-group">
-                      <label>Your Name *</label>
-                      <input
-                        type="text"
-                        name="username"
-                        placeholder="Enter your display name"
-                        required
-                        maxlength="20"
-                        class="input-large"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <label>Room Name <span style="color: var(--accent)">*</span></label>
-                      <input
-                        type="text"
-                        name="roomName"
-                        placeholder="Enter a memorable room name (e.g., Movie Night, Anime Marathon)"
-                        maxlength="30"
-                        class="input-large room-name-input"
-                        required
-                      />
-                      <small style="color: var(--text-secondary)">This name will be displayed to all participants</small>
-                    </div>
-                  </div>
+            <!-- Room Details Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <span class="section-icon">🔗</span>
+                <h2>Room Details</h2>
+              </div>
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="join-room-id">Room Code</label>
+                  <input type="text" id="join-room-id" name="roomId" 
+                         placeholder="ABC12345" required maxlength="8" 
+                         class="room-code-input">
+                  <div class="input-hint">8-character code from room creator</div>
                 </div>
-
-                <!-- Step 2: Room Settings -->
-                <div class="form-step" data-step="2">
-                  <div class="step-header">
-                    <div class="step-icon">🏠</div>
-                    <div class="step-info">
-                      <h3>Configure your room</h3>
-                      <p>Set privacy and capacity</p>
-                    </div>
-                  </div>
-                  <div class="step-content">
-                    <div class="settings-grid">
-                      <div class="setting-card">
-                        <div class="setting-header">
-                          <span class="setting-icon">👥</span>
-                          <span>Room Capacity</span>
-                        </div>
-                        <div class="radio-group">
-                          <label class="radio-option">
-                            <input type="radio" name="maxUsers" value="5">
-                            <div class="radio-content">
-                              <span class="radio-title">Small</span>
-                              <span class="radio-desc">Up to 5 users</span>
-                            </div>
-                          </label>
-                          <label class="radio-option">
-                            <input type="radio" name="maxUsers" value="10" checked>
-                            <div class="radio-content">
-                              <span class="radio-title">Medium</span>
-                              <span class="radio-desc">Up to 10 users</span>
-                            </div>
-                          </label>
-                          <label class="radio-option">
-                            <input type="radio" name="maxUsers" value="25">
-                            <div class="radio-content">
-                              <span class="radio-title">Large</span>
-                              <span class="radio-desc">Up to 25 users</span>
-                            </div>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="setting-card">
-                        <div class="setting-header">
-                          <span class="setting-icon">🔒</span>
-                          <span>Privacy</span>
-                        </div>
-                        <div class="radio-group">
-                          <label class="radio-option">
-                            <input type="radio" name="privacy" value="public">
-                            <div class="radio-content">
-                              <span class="radio-title">Public</span>
-                              <span class="radio-desc">Anyone can join</span>
-                            </div>
-                          </label>
-                          <label class="radio-option">
-                            <input type="radio" name="privacy" value="private" checked>
-                            <div class="radio-content">
-                              <span class="radio-title">Private</span>
-                              <span class="radio-desc">Password protected</span>
-                            </div>
-                          </label>
-                        </div>
-                        <div class="password-field" id="password-group">
-                          <input
-                            type="password"
-                            name="password"
-                            placeholder="Enter room password (optional)"
-                            maxlength="20"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div class="input-group">
+                  <label for="join-password">Password <span class="optional">(optional)</span></label>
+                  <input type="password" id="join-password" name="password" 
+                         placeholder="Room password" maxlength="20">
+                  <div class="input-hint">Only for private rooms</div>
                 </div>
-
-                <!-- Step 3: Quality Settings -->
-                <div class="form-step" data-step="3">
-                  <div class="step-header">
-                    <div class="step-icon">🎬</div>
-                    <div class="step-info">
-                      <h3>Choose streaming quality</h3>
-                      <p>Select based on your internet speed</p>
-                    </div>
-                  </div>
-                  <div class="step-content">
-                    <div class="quality-options">
-                      <label class="quality-option">
-                        <input type="radio" name="videoQuality" value="720p30">
-                        <div class="quality-card">
-                          <div class="quality-icon">📺</div>
-                          <div class="quality-info">
-                            <div class="quality-title">Standard</div>
-                            <div class="quality-specs">720p @ 30fps</div>
-                            <div class="quality-bandwidth">3.5 Mbps</div>
-                          </div>
-                        </div>
-                      </label>
-                      <label class="quality-option">
-                        <input type="radio" name="videoQuality" value="720p60">
-                        <div class="quality-card">
-                          <div class="quality-icon">🎯</div>
-                          <div class="quality-info">
-                            <div class="quality-title">Smooth</div>
-                            <div class="quality-specs">720p @ 60fps</div>
-                            <div class="quality-bandwidth">4.5 Mbps</div>
-                          </div>
-                        </div>
-                      </label>
-                      <label class="quality-option">
-                        <input type="radio" name="videoQuality" value="1080p30">
-                        <div class="quality-card">
-                          <div class="quality-icon">🎬</div>
-                          <div class="quality-info">
-                            <div class="quality-title">HD</div>
-                            <div class="quality-specs">1080p @ 30fps</div>
-                            <div class="quality-bandwidth">5.0 Mbps</div>
-                          </div>
-                        </div>
-                      </label>
-                      <label class="quality-option">
-                        <input type="radio" name="videoQuality" value="1080p60" checked>
-                        <div class="quality-card recommended">
-                          <div class="quality-badge">Recommended</div>
-                          <div class="quality-icon">🚀</div>
-                          <div class="quality-info">
-                            <div class="quality-title">HD Smooth</div>
-                            <div class="quality-specs">1080p @ 60fps</div>
-                            <div class="quality-bandwidth">8.0 Mbps</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="form-navigation">
-                  <button type="button" class="btn btn-secondary" id="prev-step" style="display: none;">
-                    <span>←</span> Previous
-                  </button>
-                  <button type="button" class="btn btn-primary" id="next-step">
-                    Next <span>→</span>
-                  </button>
-                  <button type="submit" class="btn btn-primary btn-large" id="create-submit" style="display: none;">
-                    <span class="btn-icon">🚀</span>
-                    Create Room
-                  </button>
-                </div>
-              </form>
+              </div>
             </div>
-          </div>
+
+            <!-- Connection Settings Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <span class="section-icon">🌐</span>
+                <h2>Connection Settings</h2>
+              </div>
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="join-server-host">Server Host</label>
+                  <input type="text" id="join-server-host" name="serverHost" 
+                         placeholder="localhost" value="localhost" required>
+                  <div class="input-hint">IP address or hostname</div>
+                </div>
+                <div class="input-group">
+                  <label for="join-server-port">Server Port</label>
+                  <input type="number" id="join-server-port" name="serverPort" 
+                         placeholder="5000" value="5000" required min="1000" max="65535">
+                  <div class="input-hint">Default: 5000</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+              <button type="submit" class="join-btn">
+                <span>🔗</span>
+                Join Room
+              </button>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
 
-      <!-- Join Room Page -->
-      <div class="page" id="join-page">
-        <div class="page-container">
-          <div class="page-header">
-            <button class="back-btn" data-action="back-to-welcome">
-              <span>←</span> Back
-            </button>
-            <h1>Join Room</h1>
-          </div>
-
-          <div class="join-form">
-            <div class="join-card">
-              <form id="join-room-form">
-                <div class="form-section">
-                  <h3>
-                    <span>👤</span>
-                    <div>
-                      <div>Your Information</div>
-                      <p style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: 400; margin-top: 4px;">Tell us your name to join the room</p>
-                    </div>
-                  </h3>
-                  <div class="form-section-content">
-                    <div class="input-group">
-                      <label>Your Name <span>*</span></label>
-                      <input
-                        type="text"
-                        name="username"
-                        placeholder="Enter your display name"
-                        required
-                        maxlength="20"
-                      />
-                      <div class="input-hint">
-                        This will be visible to all participants in the room
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-section">
-                  <h3>
-                    <span>🔗</span>
-                    <div>
-                      <div>Room Details</div>
-                      <p style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: 400; margin-top: 4px;">Enter the room information to join</p>
-                    </div>
-                  </h3>
-                  <div class="form-section-content">
-                    <div class="input-group">
-                      <label>Room ID <span>*</span></label>
-                      <input
-                        type="text"
-                        name="roomId"
-                        placeholder="Enter 8-character room ID (e.g., ABC12345)"
-                        required
-                        maxlength="8"
-                        style="text-transform: uppercase; font-family: 'SF Mono', monospace; letter-spacing: 2px; font-weight: 600;"
-                      />
-                      <div class="input-hint">Get this unique code from the room creator</div>
-                    </div>
-                    <div class="input-group">
-                      <label>Password <span style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter room password if required"
-                        maxlength="20"
-                      />
-                      <div class="input-hint">Only required for private rooms</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-section">
-                  <h3>
-                    <span>🌐</span>
-                    <div>
-                      <div>Server Connection</div>
-                      <p style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: 400; margin-top: 4px;">Configure server settings for connection</p>
-                    </div>
-                  </h3>
-                  <div class="form-section-content">
-                    <div class="config-grid">
-                      <div class="input-group">
-                        <label>Server Host</label>
-                        <input type="text" name="serverHost" placeholder="localhost or IP address" value="localhost" required>
-                        <div class="input-hint">Host server address</div>
-                      </div>
-                      <div class="input-group">
-                        <label>Server Port</label>
-                        <input type="number" name="serverPort" placeholder="5000" value="5000" required min="1000" max="65535">
-                        <div class="input-hint">Port number (default: 5000)</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-actions" style="padding: var(--space-xl); background: var(--glass); border-top: 1px solid var(--glass-border);">
-                  <button type="submit" class="btn btn-primary btn-large">
-                    <span class="btn-icon">🔗</span>
-                    Join Room
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Enhanced Success Page -->
-      <div class="page" id="success-page">
-        <div class="success-content">
+    <!-- Success Page -->
+    <div class="page" id="success-page">
+      <div class="success-container">
+        <!-- Success Header -->
+        <div class="success-header">
           <div class="success-icon">✅</div>
-          <div class="success-header">
-            <h1>Room Created Successfully!</h1>
-            <p>
-              Your high-quality streaming room is ready. Share these links to
-              invite others.
+          <h1>Room Created!</h1>
+          <p>Your room is ready for friends to join</p>
+        </div>
+
+        <!-- Room Info Card -->
+        <div class="room-info-card">
+          <div class="room-details">
+            <div class="room-name">
+              <label>Room Name</label>
+              <span id="room-name-success">Loading...</span>
+            </div>
+            <div class="room-code">
+              <label>Room Code</label>
+              <div class="code-display">
+                <span id="room-id-display">LOADING...</span>
+                <button class="copy-btn" data-copy="room-id" title="Copy room code">
+                  📋
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Actions -->
+        <div class="success-actions">
+          <button class="btn-primary large" data-action="enter-room">
+            <span>🎬</span>
+            Enter Room
+          </button>
+          <button class="btn-secondary" data-action="create-another">
+            <span>➕</span>
+            Create Another
+          </button>
+        </div>
+
+        <!-- Sharing Options -->
+        <div class="sharing-section">
+          <h3>Share with Friends</h3>
+          <div class="sharing-options">
+            <div class="share-option">
+              <div class="share-icon">📱</div>
+              <div class="share-content">
+                <div class="share-title">Local Network</div>
+                <div class="share-desc">Friends on same WiFi</div>
+                <div class="share-url" id="local-url">http://loading...</div>
+                <button class="copy-small" data-copy="local-url">Copy</button>
+              </div>
+            </div>
+            <div class="share-option">
+              <div class="share-icon">🌐</div>
+              <div class="share-content">
+                <div class="share-title">Internet Access</div>
+                <div class="share-desc">Requires port forwarding</div>
+                <button class="setup-guide-btn" id="setup-guide-btn">Setup Guide</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Network Status -->
+        <div class="network-status-simple">
+          <div class="status-item">
+            <span class="status-label">Local Network:</span>
+            <span class="status-value success">✅ Ready</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Internet Access:</span>
+            <span class="status-value warning">⚠️ Setup Required</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden elements for compatibility -->
+    <div style="display: none;">
+      <div class="detail-item">
+        <div class="detail-info">
+          <div class="detail-label">
+            <span class="detail-icon">🌐</span> Web Browser Link
+          </div>
+          <div class="detail-value" id="web-link">http://loading...</div>
+        </div>
+        <button class="copy-btn" data-copy="web-link">
+          <span>📋</span> Copy
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- Enhanced Room Page -->
+  <div class="page" id="room-page">
+    <!-- Top Bar - Fixed 50px height -->
+    <div class="room-top-bar">
+      <div class="room-top-bar-left">
+        <div class="room-info">
+          <span class="room-info-icon">🎬</span>
+          <div class="room-info-text">
+            <div class="room-info-name" id="room-name-display">Room Name</div>
+            <div class="room-info-id" id="room-id-top">ROOM-ID</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="room-top-bar-center">
+        <div class="connection-status" id="connection-status-top" title="Click for details">
+          <span class="status-dot"></span>
+          <span id="connection-status-text">Connected</span>
+        </div>
+        <button class="top-bar-btn" id="network-info-btn" title="Network Information">
+          <span>📡</span>
+          <span id="network-latency">-- ms</span>
+        </button>
+      </div>
+
+      <div class="room-top-bar-right">
+        <button class="top-bar-btn" id="speed-test-top-btn" title="Test Internet Speed">
+          <span>⚡</span>
+          <span>Speed Test</span>
+        </button>
+        <button class="top-bar-btn danger" data-action="leave-room" title="Leave Room">
+          <span>🚪</span>
+          <span>Leave</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="room-layout">
+      <div class="video-section">
+        <div id="room-title" class="room-title">Room</div>
+        <!-- Media Manager Panel (Always visible for admin) -->
+        <div class="media-manager admin-only" id="media-manager">
+          <div class="media-manager-header">
+            <h3>📺 Media Control</h3>
+            <div class="media-status">
+              <span class="status-dot" id="media-status-dot"></span>
+              <span id="media-status-text">No Media</span>
+            </div>
+          </div>
+
+          <div class="current-media" id="current-media-info" style="display: none;">
+            <div class="media-info-row">
+              <span class="media-label">Now Playing:</span>
+              <span class="media-name" id="current-media-name">--</span>
+            </div>
+            <div class="media-info-row">
+              <span class="media-label">Source:</span>
+              <span class="media-source" id="current-media-source">--</span>
+            </div>
+            <div class="media-actions">
+              <button class="media-btn danger" id="clear-video" title="Remove Current Video">
+                <span>🗑️</span> Clear
+              </button>
+            </div>
+          </div>
+
+          <div class="media-controls">
+            <button class="media-btn primary" data-action="load-video" title="Load from Computer">
+              <span>📁</span> Load File
+            </button>
+            <button class="media-btn secondary" data-action="load-url" title="Load from URL/YouTube">
+              <span>🌐</span> Load URL
+            </button>
+            <button class="media-btn" id="media-history-btn" title="Recent Media">
+              <span>📜</span> History
+            </button>
+          </div>
+
+          <!-- Media History Dropdown -->
+          <div class="media-history" id="media-history" style="display: none;">
+            <h4>Recent Media</h4>
+            <div class="history-list" id="media-history-list">
+              <div class="history-empty">No recent media</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="video-container">
+          <video class="main-player" id="main-video" controls></video>
+          <div class="video-overlay">
+            <div class="overlay-top">
+              <div class="video-title" id="video-title">
+                No video loaded
+              </div>
+              <div class="video-info">
+                <div class="video-status">
+                  <span class="status-indicator"></span>
+                  <span id="video-status-text">Ready</span>
+                </div>
+                <div class="video-quality" id="video-quality">Auto</div>
+              </div>
+            </div>
+            <div class="overlay-center" id="video-placeholder">
+              <div class="placeholder-content">
+                <div class="placeholder-icon">🎬</div>
+                <h3>Ready to Watch</h3>
+                <p id="placeholder-message">
+                  <span class="admin-only">Use the Media Control panel above to load a video</span>
+                  <span class="non-admin" style="display: none;">Waiting for admin to load a video</span>
+                </p>
+                <div class="placeholder-stats">
+                  <div class="stat">
+                    <span class="stat-icon">👥</span>
+                    <span>Users: <span id="placeholder-users">0</span></span>
+                  </div>
+                </div>
+                <!-- Quick access buttons in placeholder too -->
+                <div class="placeholder-actions admin-only">
+                  <button class="btn btn-primary" data-action="load-video">
+                    <span>📁</span>
+                    Load Video File
+                  </button>
+                  <button class="btn btn-secondary" data-action="load-url">
+                    <span>🌐</span>
+                    YouTube / URL
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="video-controls">
+          <div class="controls-left">
+            <button class="control-btn" id="play-pause-btn" title="Play/Pause (Space)">
+              <span>▶️</span>
+            </button>
+            <div class="volume-control">
+              <button class="control-btn" id="volume-btn" title="Mute (M)">
+                <span>🔊</span>
+              </button>
+              <input type="range" class="volume-slider" min="0" max="100" value="100" title="Volume" />
+            </div>
+            <div class="time-display">
+              <span id="current-time">0:00</span>
+              <span>/</span>
+              <span id="duration">0:00</span>
+            </div>
+          </div>
+          <div class="controls-center">
+            <div class="seek-container">
+              <input type="range" class="seek-bar" min="0" max="100" value="0" title="Seek" />
+              <div class="seek-progress"></div>
+            </div>
+          </div>
+          <div class="controls-right">
+            <!-- Sync Status Indicator -->
+            <div class="sync-status" id="sync-status" title="Click for sync details">
+              <span class="sync-status-dot"></span>
+              <span class="sync-status-label">Synced</span>
+              <span class="sync-status-text" id="sync-latency">0ms</span>
+            </div>
+            <div class="quality-control">
+              <select class="quality-select" title="Video Quality">
+                <option value="auto">Auto</option>
+                <option value="1080p">1080p</option>
+                <option value="720p">720p</option>
+                <option value="480p">480p</option>
+              </select>
+            </div>
+            <button class="control-btn" id="fullscreen-btn" title="Fullscreen (F)">
+              <span>⛶</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-panel" id="sidebar-panel">
+        <!-- Sidebar Toggle Button -->
+        <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle Sidebar">
+          <span class="sidebar-toggle-icon">◀</span>
+        </button>
+
+        <div class="panel-tabs">
+          <button class="tab-btn active" data-tab="users">
+            <span>👥</span>
+            <span>Users</span>
+            <span class="tab-count" id="users-tab-count">0</span>
+          </button>
+          <button class="tab-btn" data-tab="chat">
+            <span>💬</span>
+            <span>Chat</span>
+            <span class="tab-count" id="chat-tab-count">0</span>
+          </button>
+          <button class="tab-btn" data-tab="media">
+            <span>📁</span>
+            <span>Media</span>
+          </button>
+          <button class="tab-btn" data-tab="network">
+            <span>📡</span>
+            <span>Network</span>
+          </button>
+        </div>
+
+        <div class="tab-content active" id="users-tab">
+          <div class="tab-header">
+            <h3>Room Users</h3>
+            <div class="user-stats">
+              <span class="user-count" id="user-count">0</span>
+              <span class="max-users">/ <span id="max-users">10</span></span>
+            </div>
+          </div>
+          <div class="users-list" id="users-list">
+            <div class="no-users">
+              <span>👥</span>
+              <p>Waiting for users to join...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="chat-tab">
+          <div class="tab-header">
+            <h3>Room Chat</h3>
+            <button class="clear-btn" id="clear-chat">Clear</button>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-welcome">
+              <div class="welcome-message">
+                <span>💬</span>
+                <p>
+                  Welcome to the chat! Be respectful and have fun watching
+                  together.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-container">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message..." maxlength="200" />
+            <button class="send-btn" id="send-chat">
+              <span>📤</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="media-tab">
+          <div class="tab-header">
+            <h3>Media Library</h3>
+          </div>
+          <div class="media-actions admin-only">
+            <button class="media-btn" data-action="load-video">
+              <span>📁</span>
+              <div class="btn-content">
+                <div class="btn-title">Load Video File</div>
+                <div class="btn-desc">
+                  Choose a video from your computer
+                </div>
+              </div>
+            </button>
+            <button class="media-btn" data-action="load-url">
+              <span>🌐</span>
+              <div class="btn-content">
+                <div class="btn-title">Load from URL</div>
+                <div class="btn-desc">Stream from web URL</div>
+              </div>
+            </button>
+          </div>
+          <div class="current-media" id="current-media">
+            <div class="no-media">
+              <span>🎬</span>
+              <p>No media loaded</p>
+              <div class="media-hint">
+                Admin can load content to start watching
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Network Tab -->
+        <div class="tab-content" id="network-tab">
+          <div class="tab-header">
+            <h3>Network Statistics</h3>
+          </div>
+          <div id="network-stats">
+            <div class="network-loading">
+              <p>📡 Monitoring network...</p>
+            </div>
+          </div>
+          <div class="network-info">
+            <div class="info-card">
+              <h4>Connection Quality</h4>
+              <p>Your network quality affects streaming performance. We automatically adjust quality based on your
+                connection.</p>
+            </div>
+            <div class="speed-recommendations">
+              <h4>Recommended Speeds</h4>
+              <ul>
+                <li>360p: 3+ Mbps</li>
+                <li>720p: 5+ Mbps</li>
+                <li>1080p: 10+ Mbps</li>
+                <li>1440p: 25+ Mbps</li>
+                <li>4K: 50+ Mbps</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Enhanced Loading Overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3>Setting Up Your Room...</h3>
+      <p>
+        Please wait while we configure your high-quality streaming experience
+      </p>
+      <div class="loading-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="loading-progress"></div>
+        </div>
+        <div class="progress-text" id="loading-text">Initializing...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body" id="modal-body">Modal content goes here</div>
+      <div class="modal-footer" id="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+
+
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
+<span class="rec-description" id="rec-description">--</span>
+</div>
+</div>
+</div>
+
+<!-- Comparison with Current Usage -->
+<div class="speed-comparison" id="speed-comparison" style="display: none;">
+  <h4>Network Utilization:</h4>
+  <div class="comparison-stats">
+    <div class="comparison-item">
+      <span class="comparison-label">Current Usage:</span>
+      <span class="comparison-value" id="current-usage">--</span>
+    </div>
+    <div class="comparison-item">
+      <span class="comparison-label">Available:</span>
+      <span class="comparison-value" id="available-bandwidth">--</span>
+    </div>
+    <div class="comparison-item">
+      <span class="comparison-label">Utilization:</span>
+      <span class="comparison-value" id="network-utilization">--</span>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<!-- Modal Templates -->
+<!-- These will be populated dynamically by ModalManager -->
+
+<!-- Generic Info Modal Template -->
+<div class="modal-overlay" id="info-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-md">
+    <div class="modal-header">
+      <h2 class="modal-title" id="info-modal-title">
+        <span class="modal-title-icon">ℹ️</span>
+        <span>Information</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body" id="info-modal-body">
+      <!-- Content will be injected here -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Form Modal Template (for room creation, settings, etc.) -->
+<div class="modal-overlay" id="form-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-md">
+    <div class="modal-header">
+      <h2 class="modal-title" id="form-modal-title">
+        <span class="modal-title-icon">📝</span>
+        <span>Form</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body" id="form-modal-body">
+      <!-- Form content will be injected here -->
+    </div>
+    <div class="modal-footer" id="form-modal-footer">
+      <button class="btn btn-secondary modal-close-btn">Cancel</button>
+      <button class="btn btn-primary" id="form-modal-submit">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Modal Template (for network details, errors, etc.) -->
+<div class="modal-overlay" id="status-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title" id="status-modal-title">
+        <span class="modal-title-icon">📊</span>
+        <span>Status</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body" id="status-modal-body">
+      <!-- Status content will be injected here -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Error Modal Template -->
+<div class="modal-overlay" id="error-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title" id="error-modal-title">
+        <span class="modal-title-icon">⚠️</span>
+        <span>Error</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body" id="error-modal-body">
+      <!-- Error content will be injected here -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger modal-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Features Modal -->
+<div class="modal-overlay" id="features-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <span class="modal-title-icon">✨</span>
+        <span>Why SyncStream Pro?</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-subtitle">Everything you need for the perfect watch party</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🔄</span>
+          </div>
+          <h3>Perfect Synchronization</h3>
+          <p>Every play, pause, and seek is instantly synced across all viewers. No more countdowns or "are you at
+            1:23?"</p>
+          <div class="feature-badge">WebSocket Technology</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🏠</span>
+          </div>
+          <h3>You Own Your Server</h3>
+          <p>When you create a room, your PC becomes the host. Complete control, no third-party servers, your rules.</p>
+          <div class="feature-badge">P2P Architecture</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">💬</span>
+          </div>
+          <h3>Real-time Chat</h3>
+          <p>React and discuss while watching. Chat messages sync with video timestamps for the full experience.</p>
+          <div class="feature-badge">Built-in Messaging</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🎨</span>
+          </div>
+          <h3>Quality Control</h3>
+          <p>Support for 720p, 1080p, and 4K streaming. Adaptive quality based on everyone's connection speed.</p>
+          <div class="feature-badge">HD/4K Support</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🔒</span>
+          </div>
+          <h3>Privacy First</h3>
+          <p>Password-protected rooms, admin controls, and no data collection. Your watch party, your privacy.</p>
+          <div class="feature-badge">Secure Rooms</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🌐</span>
+          </div>
+          <h3>Works Everywhere</h3>
+          <p>Desktop app via Electron or any modern browser. Share links that work on any device.</p>
+          <div class="feature-badge">Cross-Platform</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- How It Works Modal -->
+<div class="modal-overlay" id="how-it-works-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-md">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <span class="modal-title-icon">❓</span>
+        <span>How It Works</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-subtitle">Get started in under a minute</p>
+      <div class="modal-steps">
+        <div class="modal-step">
+          <div class="modal-step-number">1</div>
+          <div class="modal-step-content">
+            <h3 class="modal-step-title">Create or Join</h3>
+            <p class="modal-step-description">Host creates a room and becomes the server. Friends join with the room
+              code.</p>
+          </div>
+        </div>
+
+        <div class="modal-step">
+          <div class="modal-step-number">2</div>
+          <div class="modal-step-content">
+            <h3 class="modal-step-title">Load Your Video</h3>
+            <p class="modal-step-description">Add any video file or streaming URL. Everyone sees the same content.</p>
+          </div>
+        </div>
+
+        <div class="modal-step">
+          <div class="modal-step-number">3</div>
+          <div class="modal-step-content">
+            <h3 class="modal-step-title">Watch Together</h3>
+            <p class="modal-step-description">Play, pause, seek - everything syncs automatically. Chat while you watch!
             </p>
           </div>
-
-          <div class="sharing-panel">
-            <div class="room-details">
-              <div class="detail-item room-id-item">
-                <div class="detail-info">
-                  <div class="detail-label">
-                    <span class="detail-icon">🏠</span> Room ID
-                  </div>
-                  <div class="detail-value large-text" id="room-id-display">LOADING...</div>
-                  <div class="detail-hint">Share this ID with your friends</div>
-                </div>
-                <button class="copy-btn primary" data-copy="room-id">
-                  <span>📋</span> Copy
-                </button>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-info">
-                  <div class="detail-label">
-                    <span class="detail-icon">🖥️</span> Desktop App Link
-                  </div>
-                  <div class="detail-value" id="app-link">syncstream://loading...</div>
-                </div>
-                <button class="copy-btn" data-copy="app-link">
-                  <span>📋</span> Copy
-                </button>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-info">
-                  <div class="detail-label">
-                    <span class="detail-icon">🌐</span> Web Browser Link
-                  </div>
-                  <div class="detail-value" id="web-link">http://loading...</div>
-                </div>
-                <button class="copy-btn" data-copy="web-link">
-                  <span>📋</span> Copy
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Port Forwarding Guide -->
-          <div class="port-forward-guide">
-            <div class="guide-header">
-              <span class="guide-icon">🌐</span>
-              <h3>Share with People Outside Your Network</h3>
-            </div>
-            
-            <div class="guide-tabs">
-              <button class="guide-tab active" data-tab="how-it-works">How It Works</button>
-              <button class="guide-tab" data-tab="setup-guide">Setup Guide</button>
-              <button class="guide-tab" data-tab="pros-cons">Pros & Cons</button>
-            </div>
-            
-            <div class="guide-content">
-              <div class="tab-panel active" id="how-it-works">
-                <div class="info-box">
-                  <h4>📡 Current Status</h4>
-                  <div class="status-grid">
-                    <div class="status-item">
-                      <span class="label">Local Network:</span>
-                      <span class="value success">✅ Working</span>
-                    </div>
-                    <div class="status-item">
-                      <span class="label">Internet Access:</span>
-                      <span class="value" id="internet-status">⚠️ Requires Port Forwarding</span>
-                    </div>
-                    <div class="status-item">
-                      <span class="label">Your Local IP:</span>
-                      <span class="value" id="local-ip">Detecting...</span>
-                    </div>
-                    <div class="status-item">
-                      <span class="label">Your Public IP:</span>
-                      <span class="value" id="public-ip">Detecting...</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="explanation">
-                  <h4>How Your App Works as a Server:</h4>
-                  <ul>
-                    <li>✅ <strong>On Your Network:</strong> Anyone on your WiFi can join using your local IP</li>
-                    <li>🔧 <strong>From Internet:</strong> You need to configure port forwarding on your router</li>
-                    <li>🖥️ <strong>Your PC = Server:</strong> When you create a room, your computer hosts it</li>
-                    <li>🔄 <strong>Direct Connection:</strong> No middleman servers - direct peer-to-peer</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div class="tab-panel" id="setup-guide">
-                <div class="setup-steps">
-                  <h4>🔧 Port Forwarding Setup (5-10 minutes)</h4>
-                  
-                  <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                      <h5>Access Your Router Settings</h5>
-                      <p>Open your browser and go to your router's admin page:</p>
-                      <div class="router-links">
-                        <button class="router-link" onclick="window.open('http://192.168.1.1', '_blank')">192.168.1.1</button>
-                        <button class="router-link" onclick="window.open('http://192.168.0.1', '_blank')">192.168.0.1</button>
-                        <button class="router-link" onclick="window.open('http://10.0.0.1', '_blank')">10.0.0.1</button>
-                      </div>
-                      <p class="hint">Login credentials are usually on your router's sticker</p>
-                    </div>
-                  </div>
-                  
-                  <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                      <h5>Find Port Forwarding Section</h5>
-                      <p>Look for one of these in your router settings:</p>
-                      <ul>
-                        <li>"Port Forwarding"</li>
-                        <li>"Virtual Servers"</li>
-                        <li>"NAT" or "NAT Forwarding"</li>
-                        <li>"Applications & Gaming"</li>
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                      <h5>Add Port Forwarding Rule</h5>
-                      <div class="config-box">
-                        <div class="config-item">
-                          <span class="config-label">Service Name:</span>
-                          <span class="config-value">SyncStream</span>
-                        </div>
-                        <div class="config-item">
-                          <span class="config-label">Protocol:</span>
-                          <span class="config-value">TCP</span>
-                        </div>
-                        <div class="config-item">
-                          <span class="config-label">External Port:</span>
-                          <span class="config-value">5000</span>
-                        </div>
-                        <div class="config-item">
-                          <span class="config-label">Internal Port:</span>
-                          <span class="config-value">5000</span>
-                        </div>
-                        <div class="config-item">
-                          <span class="config-label">Internal IP:</span>
-                          <span class="config-value" id="your-local-ip">Your PC's IP</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                      <h5>Save and Test</h5>
-                      <p>After saving, share this URL with friends:</p>
-                      <div class="public-url-box">
-                        <span id="public-url">http://YOUR_PUBLIC_IP:5000</span>
-                        <button class="copy-btn" id="copy-public-url">
-                          <span>📋</span> Copy
-                        </button>
-                      </div>
-                      <button class="btn btn-secondary" onclick="window.open('https://www.yougetsignal.com/tools/open-ports/', '_blank')">
-                        Test Port Status
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="router-guides">
-                  <h5>📚 Router-Specific Guides:</h5>
-                  <div class="router-buttons">
-                    <button onclick="window.open('https://portforward.com/router.htm', '_blank')">Find Your Router Model</button>
-                    <button onclick="window.open('https://www.noip.com/support/knowledgebase/general-port-forwarding-guide/', '_blank')">General Guide</button>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="tab-panel" id="pros-cons">
-                <div class="pros-cons-grid">
-                  <div class="pros-section">
-                    <h4>✅ Advantages of Port Forwarding</h4>
-                    <ul>
-                      <li><strong>Direct Connection:</strong> No middleman servers - lowest latency</li>
-                      <li><strong>Full Control:</strong> Your data stays on your computer</li>
-                      <li><strong>No Limits:</strong> No bandwidth or user restrictions</li>
-                      <li><strong>Free Forever:</strong> No monthly fees or subscriptions</li>
-                      <li><strong>Best Performance:</strong> Direct peer-to-peer connection</li>
-                      <li><strong>Privacy:</strong> You control who can access your server</li>
-                    </ul>
-                  </div>
-                  
-                  <div class="cons-section">
-                    <h4>⚠️ Considerations</h4>
-                    <ul>
-                      <li><strong>Setup Required:</strong> One-time 5-10 minute configuration</li>
-                      <li><strong>PC Must Stay On:</strong> Your computer hosts the room</li>
-                      <li><strong>IP May Change:</strong> Dynamic IPs require occasional updates</li>
-                      <li><strong>Security:</strong> Opens a port on your network (safe if configured correctly)</li>
-                      <li><strong>ISP Restrictions:</strong> Some ISPs block certain ports</li>
-                    </ul>
-                  </div>
-                </div>
-                
-                <div class="alternatives-box">
-                  <h5>🔄 Alternative: Use Dynamic DNS</h5>
-                  <p>Get a permanent domain name that always points to your IP:</p>
-                  <div class="ddns-options">
-                    <button onclick="window.open('https://www.noip.com/', '_blank')">No-IP (Free)</button>
-                    <button onclick="window.open('https://www.duckdns.org/', '_blank')">DuckDNS (Free)</button>
-                    <button onclick="window.open('https://freedns.afraid.org/', '_blank')">FreeDNS</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="success-actions">
-            <button class="btn btn-primary btn-large" data-action="enter-room">
-              <span class="btn-icon">🎬</span>
-              Enter Room Now
-            </button>
-            <button class="btn btn-secondary" data-action="create-another">
-              <span class="btn-icon">➕</span>
-              Create Another Room
-            </button>
-          </div>
         </div>
       </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Got it</button>
+    </div>
+  </div>
+</div>
 
-      <!-- Enhanced Room Page -->
-      <div class="page" id="room-page">
-        <div class="room-layout">
-          <div class="video-section">
-            <div id="room-title" class="room-title">Room</div>
-            <!-- Media Manager Panel (Always visible for admin) -->
-            <div class="media-manager admin-only" id="media-manager">
-              <div class="media-manager-header">
-                <h3>📺 Media Control</h3>
-                <div class="media-status">
-                  <span class="status-dot" id="media-status-dot"></span>
-                  <span id="media-status-text">No Media</span>
-                </div>
-              </div>
-              
-              <div class="current-media" id="current-media-info" style="display: none;">
-                <div class="media-info-row">
-                  <span class="media-label">Now Playing:</span>
-                  <span class="media-name" id="current-media-name">--</span>
-                </div>
-                <div class="media-info-row">
-                  <span class="media-label">Source:</span>
-                  <span class="media-source" id="current-media-source">--</span>
-                </div>
-                <div class="media-actions">
-                  <button class="media-btn danger" id="clear-video" title="Remove Current Video">
-                    <span>🗑️</span> Clear
-                  </button>
-                </div>
-              </div>
-              
-              <div class="media-controls">
-                <button class="media-btn primary" data-action="load-video" title="Load from Computer">
-                  <span>📁</span> Load File
-                </button>
-                <button class="media-btn secondary" data-action="load-url" title="Load from URL/YouTube">
-                  <span>🌐</span> Load URL
-                </button>
-                <button class="media-btn" id="media-history-btn" title="Recent Media">
-                  <span>📜</span> History
-                </button>
-              </div>
-              
-              <!-- Media History Dropdown -->
-              <div class="media-history" id="media-history" style="display: none;">
-                <h4>Recent Media</h4>
-                <div class="history-list" id="media-history-list">
-                  <div class="history-empty">No recent media</div>
-                </div>
-              </div>
-            </div>
+<!-- Settings/About Modal -->
+<div class="modal-overlay" id="settings-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <span class="modal-title-icon">⚙️</span>
+        <span>About SyncStream Pro</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="about-section">
+        <div class="about-header">
+          <div class="about-logo">🎬</div>
+          <h3>SyncStream Pro</h3>
+          <p class="about-version">Version 2.0.0</p>
+          <p class="about-tagline">Watch videos together in perfect sync with P2P streaming</p>
+        </div>
 
-            <div class="video-container">
-              <video class="main-player" id="main-video" controls></video>
-              <div class="video-overlay">
-                <div class="overlay-top">
-                  <div class="video-title" id="video-title">
-                    No video loaded
-                  </div>
-                  <div class="video-info">
-                    <div class="video-status">
-                      <span class="status-indicator"></span>
-                      <span id="video-status-text">Ready</span>
-                    </div>
-                    <div class="video-quality" id="video-quality">Auto</div>
-                  </div>
-                </div>
-                <div class="overlay-center" id="video-placeholder">
-                  <div class="placeholder-content">
-                    <div class="placeholder-icon">🎬</div>
-                    <h3>Ready to Watch</h3>
-                    <p id="placeholder-message">
-                      <span class="admin-only">Use the Media Control panel above to load a video</span>
-                      <span class="non-admin" style="display: none;">Waiting for admin to load a video</span>
-                    </p>
-                    <div class="placeholder-stats">
-                      <div class="stat">
-                        <span class="stat-icon">👥</span>
-                        <span>Users: <span id="placeholder-users">0</span></span>
-                      </div>
-                    </div>
-                    <!-- Quick access buttons in placeholder too -->
-                    <div class="placeholder-actions admin-only">
-                      <button class="btn btn-primary" data-action="load-video">
-                        <span>📁</span>
-                        Load Video File
-                      </button>
-                      <button class="btn btn-secondary" data-action="load-url">
-                        <span>🌐</span>
-                        YouTube / URL
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="video-controls">
-              <div class="controls-left">
-                <button
-                  class="control-btn"
-                  id="play-pause-btn"
-                  title="Play/Pause"
-                >
-                  <span>▶️</span>
-                </button>
-                <div class="volume-control">
-                  <button class="control-btn" id="volume-btn" title="Volume">
-                    <span>🔊</span>
-                  </button>
-                  <input
-                    type="range"
-                    class="volume-slider"
-                    min="0"
-                    max="100"
-                    value="100"
-                  />
-                </div>
-                <div class="time-display">
-                  <span id="current-time">0:00</span>
-                  <span>/</span>
-                  <span id="duration">0:00</span>
-                </div>
-              </div>
-              <div class="controls-center">
-                <div class="seek-container">
-                  <input
-                    type="range"
-                    class="seek-bar"
-                    min="0"
-                    max="100"
-                    value="0"
-                  />
-                  <div class="seek-buffer"></div>
-                  <div class="seek-progress"></div>
-                </div>
-              </div>
-              <div class="controls-right">
-                <div class="quality-control">
-                  <select class="quality-select" title="Video Quality">
-                    <option value="auto">Auto</option>
-                    <option value="1080p">1080p</option>
-                    <option value="720p">720p</option>
-                    <option value="480p">480p</option>
-                  </select>
-                </div>
-                <button
-                  class="control-btn"
-                  id="subtitle-btn"
-                  title="Subtitles (C)"
-                >
-                  <span>📝</span>
-                </button>
-                <button
-                  class="control-btn"
-                  id="speed-btn"
-                  title="Playback Speed"
-                >
-                  <span>⚡</span>
-                </button>
-                <button
-                  class="control-btn"
-                  id="pip-btn"
-                  title="Picture-in-Picture (P)"
-                >
-                  <span>📺</span>
-                </button>
-                <button
-                  class="control-btn admin-only"
-                  data-action="load-video"
-                  title="Load Video"
-                >
-                  <span>📁</span>
-                </button>
-                <button
-                  class="control-btn"
-                  id="fullscreen-btn"
-                  title="Fullscreen (F)"
-                >
-                  <span>⛶</span>
-                </button>
-                <button
-                  class="control-btn"
-                  id="help-btn"
-                  title="Keyboard Shortcuts (H)"
-                >
-                  <span>❓</span>
-                </button>
-              </div>
+        <div class="about-content">
+          <div class="about-card">
+            <h4>💻 Open Source Project</h4>
+            <p>SyncStream Pro is a free, open-source project built with modern web technologies. Feel free to
+              contribute, report issues, or fork the project!</p>
+            <div class="tech-stack">
+              <span class="tech-badge">Node.js</span>
+              <span class="tech-badge">Socket.IO</span>
+              <span class="tech-badge">Electron</span>
+              <span class="tech-badge">Express</span>
+              <span class="tech-badge">WebRTC</span>
             </div>
           </div>
 
-          <div class="sidebar-panel">
-            <div class="panel-tabs">
-              <button class="tab-btn active" data-tab="users">
-                <span>👥</span>
-                <span>Users</span>
-                <span class="tab-count" id="users-tab-count">0</span>
-              </button>
-              <button class="tab-btn" data-tab="chat">
-                <span>💬</span>
-                <span>Chat</span>
-                <span class="tab-count" id="chat-tab-count">0</span>
-              </button>
-              <button class="tab-btn" data-tab="media">
-                <span>📁</span>
-                <span>Media</span>
-              </button>
-              <button class="tab-btn" data-tab="network">
-                <span>📡</span>
-                <span>Network</span>
-              </button>
+          <div class="about-card">
+            <h4>🔗 Links & Resources</h4>
+            <div class="about-links">
+              <a href="https://github.com/yourusername/syncstream-pro" target="_blank" class="about-link">
+                <span>📖</span>
+                <span>View on GitHub</span>
+              </a>
+              <a href="https://github.com/yourusername/syncstream-pro/issues" target="_blank" class="about-link">
+                <span>🐛</span>
+                <span>Report Issue</span>
+              </a>
+              <a href="https://github.com/yourusername/syncstream-pro/wiki" target="_blank" class="about-link">
+                <span>📚</span>
+                <span>Documentation</span>
+              </a>
+              <a href="https://github.com/yourusername/syncstream-pro/blob/main/LICENSE" target="_blank"
+                class="about-link">
+                <span>⚖️</span>
+                <span>MIT License</span>
+              </a>
             </div>
+          </div>
 
-            <div class="tab-content active" id="users-tab">
-              <div class="tab-header">
-                <h3>Room Users</h3>
-                <div class="user-stats">
-                  <span class="user-count" id="user-count">0</span>
-                  <span class="max-users"
-                    >/ <span id="max-users">10</span></span
-                  >
-                </div>
-              </div>
-              <div class="users-list" id="users-list">
-                <div class="no-users">
-                  <span>👥</span>
-                  <p>Waiting for users to join...</p>
-                </div>
-              </div>
+          <div class="about-card">
+            <h4>👨‍💻 Developer</h4>
+            <p>Built with ❤️ by passionate developers who believe in bringing people together through technology.</p>
+            <div class="about-social">
+              <a href="https://github.com/yourusername" target="_blank" class="social-link" title="GitHub">
+                <span>🔗</span>
+              </a>
+              <a href="https://twitter.com/yourusername" target="_blank" class="social-link" title="Twitter">
+                <span>🐦</span>
+              </a>
+              <a href="mailto:your.email@example.com" class="social-link" title="Email">
+                <span>✉️</span>
+              </a>
             </div>
-
-            <div class="tab-content" id="chat-tab">
-              <div class="tab-header">
-                <h3>Room Chat</h3>
-                <button class="clear-btn" id="clear-chat">Clear</button>
-              </div>
-              <div class="chat-messages" id="chat-messages">
-                <div class="chat-welcome">
-                  <div class="welcome-message">
-                    <span>💬</span>
-                    <p>
-                      Welcome to the chat! Be respectful and have fun watching
-                      together.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="chat-input-container">
-                <input
-                  type="text"
-                  id="chat-input"
-                  class="chat-input"
-                  placeholder="Type your message..."
-                  maxlength="200"
-                />
-                <button class="send-btn" id="send-chat">
-                  <span>📤</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="tab-content" id="media-tab">
-              <div class="tab-header">
-                <h3>Media Library</h3>
-              </div>
-              <div class="media-actions admin-only">
-                <button class="media-btn" data-action="load-video">
-                  <span>📁</span>
-                  <div class="btn-content">
-                    <div class="btn-title">Load Video File</div>
-                    <div class="btn-desc">
-                      Choose a video from your computer
-                    </div>
-                  </div>
-                </button>
-                <button class="media-btn" data-action="load-url">
-                  <span>🌐</span>
-                  <div class="btn-content">
-                    <div class="btn-title">Load from URL</div>
-                    <div class="btn-desc">Stream from web URL</div>
-                  </div>
-                </button>
-              </div>
-              <div class="current-media" id="current-media">
-                <div class="no-media">
-                  <span>🎬</span>
-                  <p>No media loaded</p>
-                  <div class="media-hint">
-                    Admin can load content to start watching
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Network Tab -->
-            <div class="tab-content" id="network-tab">
-              <div class="tab-header">
-                <h3>Network Statistics</h3>
-              </div>
-              <div id="network-stats">
-                <div class="network-loading">
-                  <p>📡 Monitoring network...</p>
-                </div>
-              </div>
-              <div class="network-info">
-                <div class="info-card">
-                  <h4>Connection Quality</h4>
-                  <p>Your network quality affects streaming performance. We automatically adjust quality based on your connection.</p>
-                </div>
-                <div class="speed-recommendations">
-                  <h4>Recommended Speeds</h4>
-                  <ul>
-                    <li>360p: 3+ Mbps</li>
-                    <li>720p: 5+ Mbps</li>
-                    <li>1080p: 10+ Mbps</li>
-                    <li>1440p: 25+ Mbps</li>
-                    <li>4K: 50+ Mbps</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Enhanced Loading Overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <h3>Setting Up Your Room...</h3>
-        <p>
-          Please wait while we configure your high-quality streaming experience
-        </p>
-        <div class="loading-progress">
-          <div class="progress-bar">
-            <div class="progress-fill" id="loading-progress"></div>
-          </div>
-          <div class="progress-text" id="loading-text">Initializing...</div>
-        </div>
-      </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Close</button>
     </div>
+  </div>
+</div>
 
-    <!-- Enhanced Modal -->
-    <div class="modal-overlay" id="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="modal-title">Modal Title</h3>
-          <button class="modal-close" id="modal-close">×</button>
-        </div>
-        <div class="modal-body" id="modal-body">Modal content goes here</div>
-        <div class="modal-footer" id="modal-footer">
-          <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
-          <button class="btn btn-primary" id="modal-confirm">Confirm</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
 
-    <!-- Speed Test Modal -->
-    <div id="speed-test-modal" class="modal" style="display: none;">
-      <div class="modal-overlay"></div>
-      <div class="modal-content speed-test-content">
-        <div class="modal-header">
-          <h2>🚀 Internet Speed Test</h2>
-          <button class="modal-close" id="close-speed-test">×</button>
-        </div>
-        
-        <div class="speed-test-body">
-          <!-- Status Display -->
-          <div class="test-status" id="test-status">
-            <div class="status-message" id="status-message">Click "Start Test" to measure your real internet speed</div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="test-progress"></div>
-            </div>
-          </div>
-          
-          <!-- Results Display -->
-          <div class="speed-results" id="speed-results">
-            <!-- Download Speed -->
-            <div class="speed-metric">
-              <div class="metric-icon">⬇️</div>
-              <div class="metric-details">
-                <div class="metric-label">Download</div>
-                <div class="metric-value" id="download-speed">--</div>
-                <div class="metric-unit">Mbps</div>
-              </div>
-            </div>
-            
-            <!-- Upload Speed -->
-            <div class="speed-metric">
-              <div class="metric-icon">⬆️</div>
-              <div class="metric-details">
-                <div class="metric-label">Upload</div>
-                <div class="metric-value" id="upload-speed">--</div>
-                <div class="metric-unit">Mbps</div>
-              </div>
-            </div>
-            
-            <!-- Ping -->
-            <div class="speed-metric">
-              <div class="metric-icon">📍</div>
-              <div class="metric-details">
-                <div class="metric-label">Ping</div>
-                <div class="metric-value" id="ping-value">--</div>
-                <div class="metric-unit">ms</div>
-              </div>
-            </div>
-            
-            <!-- Jitter -->
-            <div class="speed-metric">
-              <div class="metric-icon">📊</div>
-              <div class="metric-details">
-                <div class="metric-label">Jitter</div>
-                <div class="metric-value" id="jitter-value">--</div>
-                <div class="metric-unit">ms</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Speed Rating -->
-          <div class="speed-rating" id="speed-rating" style="display: none;">
-            <div class="rating-badge">
-              <span class="rating-icon" id="rating-icon">⚡</span>
-              <span class="rating-text" id="rating-text">Testing...</span>
-            </div>
-            <div class="streaming-recommendation" id="streaming-rec">
-              <h4>Recommended Streaming Quality:</h4>
-              <div class="rec-details">
-                <span class="rec-quality" id="rec-quality">--</span>
-                <span class="rec-description" id="rec-description">--</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Comparison with Current Usage -->
-          <div class="speed-comparison" id="speed-comparison" style="display: none;">
-            <h4>Network Analysis</h4>
-            <div class="comparison-grid">
-              <div class="comparison-item">
-                <span class="comp-label">Current Usage:</span>
-                <span class="comp-value" id="current-usage">--</span>
-              </div>
-              <div class="comparison-item">
-                <span class="comp-label">Available Bandwidth:</span>
-                <span class="comp-value" id="available-bandwidth">--</span>
-              </div>
-              <div class="comparison-item">
-                <span class="comp-label">Network Utilization:</span>
-                <span class="comp-value" id="network-utilization">--</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Action Buttons -->
-          <div class="test-actions">
-            <button class="btn btn-primary" id="start-speed-test">
-              <span>🚀</span> Start Test
-            </button>
-            <button class="btn btn-secondary" id="share-results" style="display: none;">
-              <span>📤</span> Share Results
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- Load JavaScript -->
+<script type="module" src="js/app.js"></script>
+</body>
 
-    <script type="module" src="js/app.js"></script>
-  </body>
 </html>
+<!-- S
+etup Guide Modal -->
+<div class="modal-overlay" id="setup-guide-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-container modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <span class="modal-title-icon">🌐</span>
+        <span>Internet Sharing Setup</span>
+      </h2>
+      <button class="modal-close" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="setup-guide-content">
+        <div class="guide-intro">
+          <p>Enable internet access so friends outside your network can join your room.</p>
+          <div class="time-estimate">⏱️ Takes 5-10 minutes</div>
+        </div>
+
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Access Router Settings</h3>
+              <p>Open your router's admin page in a browser:</p>
+              <div class="router-options">
+                <button class="router-btn" onclick="window.open('http://192.168.1.1', '_blank')">192.168.1.1</button>
+                <button class="router-btn" onclick="window.open('http://192.168.0.1', '_blank')">192.168.0.1</button>
+                <button class="router-btn" onclick="window.open('http://10.0.0.1', '_blank')">10.0.0.1</button>
+              </div>
+              <small>💡 Login info is usually on your router's sticker</small>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Find Port Forwarding</h3>
+              <p>Look for one of these sections:</p>
+              <ul class="feature-list">
+                <li>Port Forwarding</li>
+                <li>Virtual Servers</li>
+                <li>NAT / NAT Forwarding</li>
+                <li>Applications & Gaming</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Add New Rule</h3>
+              <div class="config-table">
+                <div class="config-row">
+                  <span class="config-label">Service Name:</span>
+                  <span class="config-value">SyncStream</span>
+                </div>
+                <div class="config-row">
+                  <span class="config-label">Protocol:</span>
+                  <span class="config-value">TCP</span>
+                </div>
+                <div class="config-row">
+                  <span class="config-label">External Port:</span>
+                  <span class="config-value">5000</span>
+                </div>
+                <div class="config-row">
+                  <span class="config-label">Internal Port:</span>
+                  <span class="config-value">5000</span>
+                </div>
+                <div class="config-row">
+                  <span class="config-label">Internal IP:</span>
+                  <span class="config-value" id="guide-local-ip">Your PC IP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Share Public URL</h3>
+              <p>After saving, friends can join using:</p>
+              <div class="public-url-box">
+                <code id="guide-public-url">http://YOUR_PUBLIC_IP:5000</code>
+                <button class="copy-url-btn" data-copy="guide-public-url">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-tips">
+          <h3>💡 Quick Tips</h3>
+          <div class="tips-grid">
+            <div class="tip">
+              <span class="tip-icon">🖥️</span>
+              <span>Keep your PC on while hosting</span>
+            </div>
+            <div class="tip">
+              <span class="tip-icon">🔒</span>
+              <span>Port 5000 is safe to forward</span>
+            </div>
+            <div class="tip">
+              <span class="tip-icon">📱</span>
+              <span>Local friends don't need this setup</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-help">
+          <h3>Need More Help?</h3>
+          <div class="help-links">
+            <button class="help-btn" onclick="window.open('https://portforward.com/router.htm', '_blank')">
+              Find Your Router Model
+            </button>
+            <button class="help-btn" onclick="window.open('https://www.yougetsignal.com/tools/open-ports/', '_blank')">
+              Test Port Status
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary modal-close-btn">Got it!</button>
+    </div>
+  </div>
+</div>""

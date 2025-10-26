@@ -1,0 +1,14 @@
+/* ============================================
+   SyncStream Pro - CLEAN MODERN UI ONLY
+   ============================================ */
+
+/* Import ONLY the clean modern CSS - nothing else */
+@import './clean-modern.css';
+
+/* Minimal room page styles */
+@import './views/room.css';
+
+/* Essential modals and toasts */
+@import './components/modal.css';
+@import './components/toast.css';
+@import './components/loading.css';

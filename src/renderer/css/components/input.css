@@ -1,0 +1,283 @@
+/* ============================================
+   Input Component Styles
+   ============================================ */
+
+/* Base Input Styles */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--space-lg);
+  background: var(--bg-input);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+/* Enhanced focus animation (Task 8.2) */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-hover);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: scale(1.01);
+  animation: inputFocusGlow 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes inputFocusGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  }
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: var(--space-xl);
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group label span {
+  color: var(--accent);
+}
+
+.input-hint {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-sm);
+  padding-left: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Input Variants */
+.input-large {
+  font-size: var(--font-lg);
+  padding: var(--space-lg);
+}
+
+/* Chat Input */
+.chat-input {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-input);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  transition: var(--transition);
+  height: 36px;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-hover);
+}
+
+/* Password Field */
+.password-field {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--glass-border);
+}
+
+.password-field input {
+  width: 100%;
+  padding: var(--space-md);
+  background: var(--bg-input);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.password-field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-hover);
+}
+
+/* Select Styles */
+.form-select {
+  width: 100%;
+  padding: var(--space-lg);
+  background: var(--bg-input);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  transition: var(--transition);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-hover);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: scale(1.01);
+}
+
+.quality-select {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+/* Radio Buttons */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.radio-option:hover {
+  background: var(--bg-input);
+  border-color: var(--glass-border);
+}
+
+.radio-option input[type="radio"] {
+  margin-right: var(--space-md);
+  accent-color: var(--primary);
+  width: auto;
+  padding: 0;
+}
+
+.radio-option input[type="radio"]:checked + .radio-content {
+  font-weight: 600;
+}
+
+.radio-option:has(input:checked) {
+  background: var(--bg-input);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-title {
+  color: var(--text-primary);
+  font-size: var(--font-base);
+}
+
+.radio-desc {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+  margin-top: 2px;
+}
+
+/* Range Sliders */
+.volume-slider,
+.seek-bar {
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.seek-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--glass);
+  border-radius: 3px;
+  appearance: none;
+}
+
+.seek-bar::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.volume-slider {
+  width: 100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.volume-control:hover .volume-slider {
+  opacity: 1;
+}
+
+/* Input Validation States */
+.input-error {
+  border-color: var(--error) !important;
+}
+
+.input-success {
+  border-color: var(--success) !important;
+}
+
+.error-message {
+  color: var(--error);
+  font-size: var(--font-sm);
+  margin-top: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.success-message {
+  color: var(--success);
+  font-size: var(--font-sm);
+  margin-top: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}

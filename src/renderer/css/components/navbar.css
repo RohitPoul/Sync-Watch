@@ -1,0 +1,98 @@
+/* ============================================
+   Navigation Bar Component Styles
+   ============================================ */
+
+.navbar {
+  height: 50px;
+  background: rgba(26, 31, 46, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-md);
+  position: relative;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar.hidden {
+  display: none;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-weight: 700;
+  font-size: var(--font-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+}
+
+.logo-icon {
+  font-size: var(--font-xl);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.room-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: 100px;
+  border: 1px solid var(--glass-border);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--success);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--success);
+  animation: pulse 2s infinite;
+}
+
+.room-id {
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-weight: 600;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.network-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass);
+  border-radius: var(--radius-full);
+  font-size: var(--font-sm);
+  margin-left: var(--space-md);
+}
+
+.room-name-nav {
+  font-weight: 600;
+  color: var(--text-primary);
+}

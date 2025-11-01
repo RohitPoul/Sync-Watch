@@ -1,8 +1,13 @@
 // UI management and DOM manipulation
+import notificationManager from './NotificationManager.js';
+import loadingManager from './LoadingManager.js';
+
 export class UIManager {
   constructor(state) {
     this.state = state;
     this.currentPage = 'welcome';
+    this.notifications = notificationManager;
+    this.loading = loadingManager;
   }
 
   init() {
@@ -13,17 +18,40 @@ export class UIManager {
     this.detectIPs();
   }
 
-  // Page Navigation
-  showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-      page.classList.remove('active');
-    });
-
+  // Page Navigation with optimized smooth transitions (Task 8.1, 11.2)
+  showPage(pageId, direction = 'forward') {
+    const currentActivePage = document.querySelector('.page.active');
     const targetPage = document.getElementById(`${pageId}-page`);
-    if (targetPage) {
-      targetPage.classList.add('active');
-      this.currentPage = pageId;
-    }
+    
+    if (!targetPage) return;
+    
+    // Batch DOM updates for better performance (Task 11.2)
+    requestAnimationFrame(() => {
+      // If there's a current page, animate it out
+      if (currentActivePage && currentActivePage !== targetPage) {
+        // Add exit animation
+        currentActivePage.classList.add('exiting');
+        
+        // Remove active class after animation
+        setTimeout(() => {
+          currentActivePage.classList.remove('active', 'exiting');
+          // Hide to reduce DOM complexity
+          currentActivePage.style.display = 'none';
+        }, 200); // Match exit animation duration
+      }
+      
+      // Prepare target page for entry
+      targetPage.style.display = 'block';
+      
+      // Use double RAF for smooth 60fps animation (Task 11.2)
+      requestAnimationFrame(() => {
+        targetPage.offsetHeight; // Force reflow
+        requestAnimationFrame(() => {
+          targetPage.classList.add('active');
+          this.currentPage = pageId;
+        });
+      });
+    });
   }
 
   showNavbar() {
@@ -34,49 +62,18 @@ export class UIManager {
     document.getElementById('navbar')?.classList.add('hidden');
   }
 
-  // Loading States
-  showLoading(message = 'Loading...') {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-      overlay.querySelector('h3').textContent = message;
-      overlay.classList.add('active');
-    }
+  // Loading States - Delegate to LoadingManager
+  showLoading(message = 'Loading...', progress = null) {
+    this.loading.showOverlay(message, progress);
   }
 
   hideLoading() {
-    document.getElementById('loading-overlay')?.classList.remove('active');
+    this.loading.hideOverlay();
   }
 
-  // Toast Notifications
-  showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-
-    const icons = {
-      success: '✅',
-      error: '❌',
-      warning: '⚠️',
-      info: 'ℹ️',
-    };
-
-    toast.innerHTML = `
-      <div class="toast-content">
-        <span class="toast-icon">${icons[type] || icons.info}</span>
-        <span class="toast-message">${message}</span>
-      </div>
-      <button class="toast-close">×</button>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove after 5 seconds
-    setTimeout(() => toast.remove(), 5000);
-
-    // Manual close
-    toast.querySelector('.toast-close').onclick = () => toast.remove();
+  // Toast Notifications - Delegate to NotificationManager
+  showToast(message, type = 'info', duration, options) {
+    return this.notifications.show(message, type, duration, options);
   }
 
   // Port Forwarding Guide Setup
@@ -147,17 +144,13 @@ export class UIManager {
       if (publicIP) {
         // Update all public IP displays
         const publicIpEl = document.getElementById('public-ip');
-        const publicUrlEl = document.getElementById('public-url');
+        const publicUrlDisplay = document.getElementById('public-url-display');
         
         if (publicIpEl) publicIpEl.textContent = publicIP;
-        if (publicUrlEl) publicUrlEl.textContent = `http://${publicIP}:5000`;
+        if (publicUrlDisplay) publicUrlDisplay.textContent = `http://${publicIP}:5000`;
         
         // Store for later use
         this.state.publicIP = publicIP;
-        
-        // Update internet status if port forwarding is detected (optional)
-        // This would require actually testing if the port is open
-        this.checkPortStatus(publicIP);
       }
     } catch (error) {
       console.error('Failed to detect public IP:', error);
@@ -175,42 +168,33 @@ export class UIManager {
     }
   }
 
-  // Room Success Page
+  // Room Success Page (Updated for new design)
   showRoomSuccess(data) {
     this.showPage('success');
     
     // Update room info with null checks
     const roomIdEl = document.getElementById('room-id-display');
+    const roomNameEl = document.getElementById('room-name-success');
     const appLinkEl = document.getElementById('app-link');
     const webLinkEl = document.getElementById('web-link');
     
-    if (roomIdEl) {
-      roomIdEl.innerHTML = `
-        <div class="room-name-large">${data.roomName || 'My Room'}</div>
-        <div class="room-id-code">${data.roomId}</div>
-      `;
-    }
+    // Update room name and ID
+    if (roomNameEl) roomNameEl.textContent = data.roomName || 'My Room';
+    if (roomIdEl) roomIdEl.textContent = data.roomId || 'LOADING...';
+    
+    // Update links
     if (appLinkEl) appLinkEl.textContent = data.shareableUrl || '';
     if (webLinkEl) webLinkEl.textContent = data.webUrl || '';
     
-    // Update stats if elements exist
-    const maxUsersEl = document.getElementById('max-users-stat');
-    const privacyEl = document.getElementById('privacy-stat');
-    
-    if (maxUsersEl) maxUsersEl.textContent = data.maxUsers;
-    if (privacyEl) {
-      privacyEl.textContent = data.roomData?.privacy === 'private' ? 'Private' : 'Public';
-    }
-    
-    // Update IP addresses in port forwarding guide
+    // Update IP addresses in guide
     const localIpEl = document.getElementById('local-ip');
-    const yourLocalIpEl = document.getElementById('your-local-ip');
+    const internalIpGuide = document.getElementById('internal-ip-guide');
     
     if (localIpEl && data.serverIp) {
       localIpEl.textContent = data.serverIp;
     }
-    if (yourLocalIpEl && data.serverIp) {
-      yourLocalIpEl.textContent = data.serverIp;
+    if (internalIpGuide && data.serverIp) {
+      internalIpGuide.textContent = data.serverIp;
     }
     
     // Detect and update public IP
@@ -251,6 +235,7 @@ export class UIManager {
     });
   }
 
+  // Optimized to reduce DOM manipulation (Task 11.2)
   updateUsersList(users) {
     const usersList = document.getElementById('users-list');
     const userCount = document.getElementById('user-count');
@@ -258,28 +243,34 @@ export class UIManager {
     
     if (!usersList) return;
     
-    if (userCount) userCount.textContent = users.length;
-    if (usersTabCount) usersTabCount.textContent = users.length;
-    
-    if (users.length === 0) {
-      usersList.innerHTML = `
-        <div class="no-users">
-          <span>👥</span>
-          <p>Waiting for users to join...</p>
-        </div>
-      `;
-    } else {
-      usersList.innerHTML = users.map(user => `
-        <div class="user-item">
-          <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
-          <div class="user-info">
-            <div class="user-name">${user.name}</div>
-            <div class="user-status">${user.isAdmin ? 'Admin' : 'Member'}</div>
+    // Batch DOM updates using DocumentFragment (Task 11.2)
+    requestAnimationFrame(() => {
+      if (userCount) userCount.textContent = users.length;
+      if (usersTabCount) usersTabCount.textContent = users.length;
+      
+      if (users.length === 0) {
+        usersList.innerHTML = `
+          <div class="no-users">
+            <span>👥</span>
+            <p>Waiting for users to join...</p>
           </div>
-          ${user.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-        </div>
-      `).join('');
-    }
+        `;
+      } else {
+        // Build HTML string once to minimize reflows
+        const usersHTML = users.map(user => `
+          <div class="user-item">
+            <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+            <div class="user-info">
+              <div class="user-name">${user.name}</div>
+              <div class="user-status">${user.isAdmin ? 'Admin' : 'Member'}</div>
+            </div>
+            ${user.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+          </div>
+        `).join('');
+        
+        usersList.innerHTML = usersHTML;
+      }
+    });
   }
 
   // Video Controls
@@ -320,33 +311,41 @@ export class UIManager {
     }
   }
 
-  // Chat UI
+  // Chat UI - Optimized to reduce DOM manipulation (Task 11.2)
   addChatMessage(data) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
     
-    const messageEl = document.createElement('div');
-    messageEl.className = 'chat-message';
-    
-    const time = new Date(data.timestamp).toLocaleTimeString();
-    
-    messageEl.innerHTML = `
-      <div class="message-header">
-        <span class="message-user">${data.user}</span>
-        <span class="message-time">${time}</span>
-      </div>
-      <div class="message-text">${this.escapeHtml(data.message)}</div>
-    `;
-    
-    chatMessages.appendChild(messageEl);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    // Update chat tab count
-    const chatTabCount = document.getElementById('chat-tab-count');
-    if (chatTabCount) {
-      const currentCount = parseInt(chatTabCount.textContent) || 0;
-      chatTabCount.textContent = currentCount + 1;
-    }
+    // Batch DOM updates for better performance (Task 11.2)
+    requestAnimationFrame(() => {
+      const messageEl = document.createElement('div');
+      messageEl.className = 'chat-message';
+      
+      const time = new Date(data.timestamp).toLocaleTimeString();
+      
+      messageEl.innerHTML = `
+        <div class="message-header">
+          <span class="message-user">${data.user}</span>
+          <span class="message-time">${time}</span>
+        </div>
+        <div class="message-text">${this.escapeHtml(data.message)}</div>
+      `;
+      
+      chatMessages.appendChild(messageEl);
+      
+      // Use smooth scrolling for better UX
+      chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+      });
+      
+      // Update chat tab count
+      const chatTabCount = document.getElementById('chat-tab-count');
+      if (chatTabCount) {
+        const currentCount = parseInt(chatTabCount.textContent) || 0;
+        chatTabCount.textContent = currentCount + 1;
+      }
+    });
   }
 
   // Tab Switching

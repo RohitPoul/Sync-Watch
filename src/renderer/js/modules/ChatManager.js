@@ -132,6 +132,9 @@ export class ChatManager {
       welcomeMsg.remove();
     }
 
+    // Check if user was scrolled to bottom before adding message
+    const wasAtBottom = this.isScrolledToBottom(chatMessages);
+
     const messageEl = document.createElement('div');
     messageEl.className = `chat-message ${data.isOwn ? 'own' : ''}`;
     
@@ -140,16 +143,23 @@ export class ChatManager {
       minute: '2-digit' 
     });
 
+    // Assign a color based on user name hash
+    const userColor = this.getUserColor(data.user);
+
     messageEl.innerHTML = `
       <div class="message-header">
-        <span class="message-user">${data.user}${data.isAdmin ? ' 👑' : ''}</span>
+        <span class="message-user" data-color="${userColor}">${data.user}${data.isAdmin ? ' 👑' : ''}</span>
         <span class="message-time">${time}</span>
       </div>
-      <div class="message-content">${this.escapeHtml(data.message)}</div>
+      <div class="message-text">${this.escapeHtml(data.message)}</div>
     `;
 
     chatMessages.appendChild(messageEl);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Auto-scroll to latest message if user was at bottom
+    if (wasAtBottom) {
+      this.scrollToBottom(chatMessages);
+    }
 
     // Update unread count if not visible
     if (!this.isVisible) {
@@ -161,6 +171,24 @@ export class ChatManager {
     if (!data.isOwn) {
       this.playMessageSound();
     }
+  }
+
+  isScrolledToBottom(element) {
+    // Consider "at bottom" if within 50px of the bottom
+    return element.scrollHeight - element.scrollTop - element.clientHeight < 50;
+  }
+
+  scrollToBottom(element) {
+    element.scrollTop = element.scrollHeight;
+  }
+
+  getUserColor(username) {
+    // Simple hash function to assign consistent colors to users
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return (Math.abs(hash) % 8) + 1; // Returns 1-8 for color classes
   }
 
   addSystemMessage(text, type = 'info') {
@@ -247,8 +275,10 @@ export class ChatManager {
       if (this.unreadCount > 0) {
         chatTabCount.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
         chatTabCount.style.display = 'block';
+        chatTabCount.classList.add('unread');
       } else {
         chatTabCount.style.display = 'none';
+        chatTabCount.classList.remove('unread');
       }
     }
   }

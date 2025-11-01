@@ -1,0 +1,442 @@
+/* ============================================
+   Responsive Behavior Styles
+   Task 9: Implement responsive behavior
+   ============================================ */
+
+/* Size Warning Overlay */
+.size-warning-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.size-warning-content {
+  background: var(--bg-card);
+  border: 2px solid var(--warning);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.warning-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.size-warning-content h3 {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--warning);
+  margin-bottom: var(--space-md);
+}
+
+.size-warning-content p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.size-requirements {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+
+.size-req {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  gap: var(--space-md);
+}
+
+.size-req:not(:last-child) {
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-md);
+}
+
+.size-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 60px;
+}
+
+.size-value {
+  font-family: 'SF Mono', monospace;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.size-current {
+  font-family: 'SF Mono', monospace;
+  font-size: var(--font-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.size-current.insufficient {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error);
+  border: 1px solid var(--error);
+}
+
+.size-current.sufficient {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.size-note {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-lg);
+  margin-bottom: 0;
+}
+
+/* Breakpoint-specific styles */
+body.breakpoint-mobile {
+  /* Mobile-specific overrides */
+}
+
+body.breakpoint-tablet {
+  /* Tablet-specific overrides */
+}
+
+body.breakpoint-desktop {
+  /* Desktop-specific overrides */
+}
+
+body.breakpoint-large,
+body.breakpoint-wide {
+  /* Large screen-specific overrides */
+}
+
+/* Responsive Video Container */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.main-player {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 1440px) {
+  :root {
+    --font-3xl: 1.75rem;
+    --font-4xl: 2.25rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .room-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar-panel {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-height: 300px;
+    border-left: none;
+    border-top: 1px solid var(--glass-border);
+  }
+  
+  .sidebar-panel.collapsed {
+    max-height: 50px;
+  }
+  
+  .video-section {
+    flex: 1;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --font-2xl: 1.25rem;
+    --font-3xl: 1.5rem;
+    --font-4xl: 2rem;
+    --space-2xl: 32px;
+  }
+  
+  .page-container {
+    padding: var(--space-lg);
+  }
+  
+  .hero-content {
+    padding: var(--space-lg);
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hero-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-xl: 1.125rem;
+    --font-2xl: 1.125rem;
+    --font-3xl: 1.25rem;
+    --space-xl: 24px;
+  }
+  
+  .settings-grid,
+  .config-grid,
+  .quality-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-controls {
+    flex-wrap: wrap;
+    padding: var(--space-md) var(--space-sm);
+  }
+  
+  .controls-center {
+    order: -1;
+    width: 100%;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .time-display {
+    font-size: var(--font-xs);
+    min-width: 90px;
+  }
+  
+  .control-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  #play-pause-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --space-lg: 16px;
+    --space-xl: 20px;
+  }
+  
+  .page-container {
+    padding: var(--space-md);
+  }
+  
+  .modal-container {
+    width: 95%;
+    max-width: 95%;
+  }
+  
+  .hero-title {
+    font-size: var(--font-2xl);
+  }
+  
+  .hero-subtitle {
+    font-size: var(--font-sm);
+  }
+}
+
+/* Responsive height adjustments */
+@media (max-height: 700px) {
+  .hero-content {
+    transform: scale(0.9);
+  }
+  
+  .modal-container {
+    max-height: 90vh;
+  }
+  
+  .video-section {
+    min-height: 300px;
+  }
+}
+
+@media (max-height: 600px) {
+  .hero-content {
+    transform: scale(0.85);
+  }
+  
+  .page-header {
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+}
+
+/* Aspect ratio utilities */
+.aspect-16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+/* Responsive text utilities */
+.text-responsive {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.heading-responsive {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Smooth transitions for responsive changes */
+.responsive-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* High DPI / Retina display optimizations (Task 9.2) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Ensure crisp rendering on high DPI displays */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Slightly thinner borders on high DPI */
+  .modal-container,
+  .btn,
+  .input-group input,
+  .card {
+    border-width: 0.5px;
+  }
+  
+  /* Optimize image rendering */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Ensure icons remain crisp */
+  .icon,
+  .emoji,
+  [class*="icon-"] {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Ultra high DPI (3x) optimizations */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+  /* Further optimize for ultra-high density displays */
+  body {
+    font-weight: 400; /* Slightly lighter weight looks better on ultra-high DPI */
+  }
+  
+  /* Even thinner borders */
+  .modal-container,
+  .btn,
+  .input-group input,
+  .card {
+    border-width: 0.33px;
+  }
+}
+
+/* Density-specific body classes */
+body.density-1x {
+  /* Standard density optimizations */
+  --ui-scale: 1.1;
+  --min-font-size: 14px;
+}
+
+body.density-1\.5x {
+  /* Medium-high density optimizations */
+  --ui-scale: 1.05;
+  --min-font-size: 13px;
+}
+
+body.density-2x {
+  /* High density (Retina) optimizations */
+  --ui-scale: 1;
+  --min-font-size: 12px;
+}
+
+body.density-3x {
+  /* Ultra high density optimizations */
+  --ui-scale: 0.95;
+  --min-font-size: 11px;
+}
+
+/* Apply UI scaling */
+.btn,
+.control-btn,
+.tab-btn,
+.input-group input,
+.modal-container {
+  transform: scale(var(--ui-scale, 1));
+  transform-origin: center;
+}
+
+/* Ensure text remains readable across all densities */
+body {
+  font-size: max(var(--font-base), var(--min-font-size, 12px));
+}
+
+p, span, div, label, button {
+  font-size: max(1em, var(--min-font-size, 12px));
+}
+
+/* Optimize video rendering for different densities */
+video {
+  image-rendering: auto;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  video {
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Canvas optimization for high DPI */
+canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* SVG optimization */
+svg {
+  shape-rendering: geometricPrecision;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  svg {
+    shape-rendering: crispEdges;
+  }
+}
+
+/* Print styles (hide unnecessary elements) */
+@media print {
+  .navbar,
+  .sidebar-panel,
+  .video-controls,
+  .modal-overlay,
+  .size-warning-overlay {
+    display: none !important;
+  }
+}

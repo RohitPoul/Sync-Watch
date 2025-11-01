@@ -1,0 +1,540 @@
+/* ============================================
+   Animation Utilities & Transitions
+   ============================================ */
+
+/* Fade Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+/* Slide Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlide {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Animations - Optimized for 60fps (Task 11.2) */
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) translateZ(0);
+  }
+}
+
+/* Modal Close Animation (Task 11.2) */
+@keyframes modalSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0) translateZ(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px) translateZ(0);
+  }
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Bounce Animation */
+@keyframes successBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+/* Spin Animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Rotate Animation */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Micro-Interactions (Task 8.2)
+   ============================================ */
+
+/* Ripple Effect */
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.5;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Button Press Animation */
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Input Focus Glow */
+@keyframes inputFocusGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  }
+}
+
+/* Shimmer Loading Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Heartbeat Animation */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  10%, 30% {
+    transform: scale(0.9);
+  }
+  20%, 40% {
+    transform: scale(1.1);
+  }
+}
+
+/* Shake Animation (for errors) */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Bounce In Animation */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Ripple Container for Buttons */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  animation: ripple 0.6s ease-out;
+}
+
+/* Micro-interaction Utility Classes */
+.hover-lift {
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-scale {
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.active-press:active {
+  animation: buttonPress 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.focus-glow:focus {
+  animation: inputFocusGlow 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 0%,
+    var(--bg-hover) 50%,
+    var(--bg-card) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ============================================
+   View Transition Animations (Task 8.1)
+   ============================================ */
+
+/* Page/View Transitions */
+@keyframes fadeInView {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutView {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+/* Page Base Styles for Transitions */
+.page {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.page.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page.exiting {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* View Transition Classes */
+.view-fade-in {
+  animation: fadeInView 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.view-fade-out {
+  animation: fadeOutView 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.view-slide-in-right {
+  animation: slideInFromRight 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.view-slide-in-left {
+  animation: slideInFromLeft 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.view-slide-out-left {
+  animation: slideOutToLeft 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.view-slide-out-right {
+  animation: slideOutToRight 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Utility Classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Transition Utilities */
+.transition-fast {
+  transition: var(--transition-fast);
+}
+
+.transition-base {
+  transition: var(--transition-base);
+}
+
+.transition-slow {
+  transition: var(--transition-slow);
+}
+
+/* ============================================
+   Performance Optimizations (Task 8.3, 11.2)
+   ============================================ */
+
+/* GPU Acceleration for smooth 60fps animations (Task 11.2) */
+.modal-overlay,
+.modal-container,
+.page,
+.btn,
+.control-btn,
+.nav-btn,
+.toast,
+.sidebar-panel,
+.video-controls {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize animations for 60fps performance (Task 11.2) */
+@media (prefers-reduced-motion: no-preference) {
+  /* Enable hardware acceleration only during animations */
+  .modal-overlay.active,
+  .modal-overlay.closing,
+  .page.active,
+  .page.exiting,
+  .btn:hover,
+  .btn:active,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    will-change: transform, opacity;
+  }
+  
+  /* Remove will-change after animation completes to save memory (Task 11.2) */
+  .modal-overlay:not(.active):not(.closing),
+  .page:not(.active):not(.exiting),
+  .btn:not(:hover):not(:active),
+  input:not(:focus),
+  select:not(:focus),
+  textarea:not(:focus) {
+    will-change: auto;
+  }
+  
+  /* Optimize transform animations to use only GPU-accelerated properties (Task 11.2) */
+  .modal-container,
+  .page,
+  .toast {
+    /* Only animate transform and opacity for 60fps */
+    transition-property: transform, opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  
+  .loading-spinner {
+    animation: none;
+    border: 3px solid var(--primary);
+  }
+  
+  /* Disable transform animations for accessibility */
+  .page,
+  .modal-container,
+  .btn:hover,
+  .modal-close:hover {
+    transform: none !important;
+  }
+  
+  /* Keep opacity transitions for better UX */
+  .page,
+  .modal-overlay {
+    transition: opacity 200ms ease !important;
+  }
+}

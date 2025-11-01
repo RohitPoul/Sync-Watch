@@ -1,0 +1,198 @@
+/* ============================================
+   Final Visual Polish (Task 11.4)
+   Ensuring consistency across all components
+   ============================================ */
+
+/* Ensure all hover states are consistent */
+button:not(:disabled):hover,
+.btn:not(:disabled):hover,
+.control-btn:hover,
+.nav-btn:hover {
+  cursor: pointer;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+.btn,
+a,
+input,
+select,
+textarea,
+.control-btn,
+.nav-btn,
+.tab-btn,
+.modal-overlay,
+.modal-container {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure consistent focus states for accessibility */
+button:focus-visible,
+.btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Consistent shadow depths */
+.elevated-1 {
+  box-shadow: var(--shadow-sm);
+}
+
+.elevated-2 {
+  box-shadow: var(--shadow-md);
+}
+
+.elevated-3 {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Ensure text is always readable */
+.text-contrast-high {
+  color: var(--text-primary);
+}
+
+.text-contrast-medium {
+  color: var(--text-secondary);
+}
+
+.text-contrast-low {
+  color: var(--text-muted);
+}
+
+/* Consistent spacing for all cards */
+.card,
+.modal-container,
+.setup-card,
+.join-card {
+  padding: var(--space-xl);
+}
+
+/* Ensure all animations are smooth */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Final polish for glassmorphism effects */
+.glass-effect {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Ensure consistent border radius */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded { border-radius: var(--radius); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Typography hierarchy consistency */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 { font-size: var(--font-4xl); }
+h2 { font-size: var(--font-3xl); }
+h3 { font-size: var(--font-2xl); }
+h4 { font-size: var(--font-xl); }
+h5 { font-size: var(--font-lg); }
+h6 { font-size: var(--font-base); }
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Ensure all icons are properly sized */
+.icon-sm { font-size: var(--font-base); }
+.icon-md { font-size: var(--font-xl); }
+.icon-lg { font-size: var(--font-2xl); }
+.icon-xl { font-size: var(--font-3xl); }
+
+/* Final animation polish */
+.animate-smooth {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fast {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slow {
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure all hover effects are consistent */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Final color consistency checks */
+.bg-primary { background: var(--primary); }
+.bg-secondary { background: var(--secondary); }
+.bg-success { background: var(--success); }
+.bg-warning { background: var(--warning); }
+.bg-error { background: var(--error); }
+.bg-info { background: var(--info); }
+
+.text-primary-color { color: var(--primary); }
+.text-secondary-color { color: var(--secondary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-error { color: var(--error); }
+.text-info { color: var(--info); }
+
+/* Ensure all borders are consistent */
+.border { border: 1px solid var(--glass-border); }
+.border-primary { border-color: var(--primary); }
+.border-success { border-color: var(--success); }
+.border-warning { border-color: var(--warning); }
+.border-error { border-color: var(--error); }
+
+/* Final spacing consistency */
+.space-y-xs > * + * { margin-top: var(--space-xs); }
+.space-y-sm > * + * { margin-top: var(--space-sm); }
+.space-y-md > * + * { margin-top: var(--space-md); }
+.space-y-lg > * + * { margin-top: var(--space-lg); }
+.space-y-xl > * + * { margin-top: var(--space-xl); }
+
+/* Ensure all transitions complete smoothly */
+.transition-complete {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: auto;
+}
+
+/* Screen reader only class for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Final polish complete */
